@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">PGR208-Exam</string>
+    <string name="select_image">Select Image</string>
+    <string name="search_results">Reverse Image search</string>
+    <string name="saved_results">Saved results</string>
+    <string name="camera_image">Select Image / Take image with camera</string>
+    <string name="upload_selected_area">Upload Selected Area</string>
+    <string name="user_selected_image">User selected image</string>
+    <string name="upload_btn">Upload</string>
+</resources>
