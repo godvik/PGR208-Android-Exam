@@ -6,6 +6,44 @@
     android:layout_height="match_parent"
     tools:context=".ReverseImageSearch">
 
+
+
+
+    <Button
+        android:id="@+id/searchGoogle"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:text="Search Google"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.051"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.025" />
+
+    <Button
+        android:id="@+id/searchBing"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:text="Search Bing"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.025" />
+
+    <Button
+        android:id="@+id/searchTineye"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:text="Search Tineye"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.942"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.025" />
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"

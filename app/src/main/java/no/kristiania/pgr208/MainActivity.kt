@@ -1,20 +1,21 @@
 package no.kristiania.pgr208
 
-import android.app.Activity
 import android.content.Intent
-import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import com.androidnetworking.AndroidNetworking
 import com.androidnetworking.common.Priority
 import com.androidnetworking.error.ANError
-import android.provider.MediaStore
-import android.widget.TextView
-import java.io.File
 import com.androidnetworking.interfaces.StringRequestListener
+import no.kristiania.pgr208.utils.URIPathHelper
+import java.io.File
 
 
 class MainActivity : AppCompatActivity() {
@@ -25,7 +26,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        requestPermission()
         AndroidNetworking.initialize(applicationContext)
 
         val searchImages: Button = findViewById(R.id.searchResultsBtn)
@@ -45,45 +46,27 @@ class MainActivity : AppCompatActivity() {
 //        SELECT IMAGE FROM GALLERY
         val selectImageBtn: Button = findViewById(R.id.selectImageBtn)
         selectImageBtn.setOnClickListener {
-            Intent(Intent.ACTION_GET_CONTENT).also {
-                it.type = "image/*"
-                startActivityForResult(it, 0)
-            }
+            val i = Intent()
+            i.action = Intent.ACTION_GET_CONTENT
+            i.type = "image/*"
+            startForResult.launch(i)
         }
     }
 
-
-    private fun getRealPathFromURI(contentURI: Uri?, context: Activity): String? {
-        val projection = arrayOf(MediaStore.Images.Media.DATA)
-        val cursor = context.managedQuery(
-            contentURI, projection, null,
-            null, null
-        ) ?: return null
-        val columnIndex = cursor
-            .getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-        return if (cursor.moveToFirst()) {
-            // cursor.close();
-            cursor.getString(columnIndex)
-        } else null
-        // cursor.close();
-    }
-
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == 0) {
-            val imageUri = data?.data
+    private var startForResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            val uriPathHelper = URIPathHelper()
+            val imageUri = it.data?.data
             val image: ImageView = findViewById(R.id.iv_userImage)
             image.setImageURI(imageUri)
-            val imagepath = getRealPathFromURI(imageUri, this)
-            imageFile = File(imagepath)
+            val imagePath = imageUri?.let { it1 -> uriPathHelper.getPath(this, it1) }
+            if (!imagePath.isNullOrBlank())
+                imageFile = File(imagePath)
             Toast.makeText(this, "Image selected", Toast.LENGTH_LONG).show()
         }
-    }
+
 
     private fun uploadImage() {
-//        Currently have to manually give permissions in emulator
-//        TODO Write code to ask for WRITE_EXTERNAL_STORAGE permissions
         val tvProgress: TextView = findViewById(R.id.tv_progress)
         AndroidNetworking.upload("http://api-edu.gtl.ai/api/v1/imagesearch/upload")
             .addHeaders("Content-Disposition:", "form-data")
@@ -97,7 +80,6 @@ class MainActivity : AppCompatActivity() {
             .getAsString(object : StringRequestListener {
                 override fun onResponse(response: String) {
                     Toast.makeText(this@MainActivity, response, Toast.LENGTH_SHORT).show()
-                    println(response)
                     uploadedImageURL = response
                     tvProgress.text = "Image uploaded successfully!"
                 }
@@ -109,5 +91,23 @@ class MainActivity : AppCompatActivity() {
                     tvProgress.text = "An error occured while uploading image"
                 }
             })
+    }
+
+    private fun hasPermission(): Boolean {
+        return ActivityCompat.checkSelfPermission(
+            this,
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun requestPermission() {
+        var permission = mutableListOf<String>()
+
+        if (!hasPermission()) {
+            permission.add(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        }
+        if (permission.isNotEmpty()) {
+            ActivityCompat.requestPermissions(this, permission.toTypedArray(), 0)
+        }
     }
 }
