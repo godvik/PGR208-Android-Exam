@@ -103,3 +103,5 @@ lint/tmp/
 # Android Profiling
 *.hprof
 
+/.idea/discord.xml
+/.idea/modules/gradle.properties

@@ -14,7 +14,7 @@ class ImageAdapter(private val data: List<ImageProperty>) : RecyclerView.Adapter
             val title = view.findViewById<TextView>(R.id.tvTitle)
             val imageView = view.findViewById<ImageView>(R.id.imageView)
 
-            title.text = property.title
+//            title.text = property.title
 
             Glide.with(view.context).load(property.image).centerCrop().into(imageView)
         }

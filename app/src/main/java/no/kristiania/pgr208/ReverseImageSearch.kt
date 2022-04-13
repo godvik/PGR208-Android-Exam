@@ -1,19 +1,17 @@
 package no.kristiania.pgr208
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.androidnetworking.error.ANError
-
-import org.json.JSONArray
-import com.androidnetworking.interfaces.JSONArrayRequestListener
 import com.androidnetworking.AndroidNetworking
 import com.androidnetworking.common.Priority
+import com.androidnetworking.error.ANError
+import com.androidnetworking.interfaces.JSONArrayRequestListener
+import org.json.JSONArray
 
 
 class ReverseImageSearch : AppCompatActivity() {
@@ -58,23 +56,26 @@ class ReverseImageSearch : AppCompatActivity() {
 
     }
 
-    private fun reverseImageSearch(baseUrl: String, imageUrl: String, site: String) {
-        Toast.makeText(this, "Making get request to $site endpoint", Toast.LENGTH_LONG).show()
+    private fun reverseImageSearch(baseUrl: String, imageUrl: String, endpoint: String) {
+        Toast.makeText(this, "Making get request to $endpoint endpoint", Toast.LENGTH_LONG).show()
 
-        AndroidNetworking.get(baseUrl + site)
+        AndroidNetworking.get(baseUrl + endpoint)
             .addQueryParameter("url", imageUrl)
             .setTag("test")
             .setPriority(Priority.LOW)
             .build()
             .getAsJSONArray(object : JSONArrayRequestListener {
                 override fun onResponse(response: JSONArray) {
-                    // do anything with response
-                    // Printing thumbnail links for now..
-//                    for (i in 0 until response.length()) {
-//                        println(response.getJSONObject(i).getString("thumbnail_link"))
-//                    }
+
+                    val list = ArrayList<ImageProperty>()
+                    for (i in 0 until response.length()) {
+                         val image = ImageProperty(response.getJSONObject(i).getString("thumbnail_link"), response.getJSONObject(i).getString("image_link"))
+                        list.add(image)
+                    }
+
+
                     recyclerView = findViewById<RecyclerView>(R.id.recycler_view).apply {
-                        myAdapter = ImageAdapter(response)
+                        myAdapter = ImageAdapter(list)
                         layoutManager = manager
                         adapter = myAdapter
                     }
@@ -90,3 +91,4 @@ class ReverseImageSearch : AppCompatActivity() {
             })
     }
 }
+
