@@ -3,8 +3,11 @@ package no.kristiania.pgr208
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.androidnetworking.error.ANError
 
 import org.json.JSONArray
@@ -14,6 +17,9 @@ import com.androidnetworking.common.Priority
 
 
 class ReverseImageSearch : AppCompatActivity() {
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var manager: RecyclerView.LayoutManager
+    private lateinit var myAdapter: RecyclerView.Adapter<*>
 
 
     private val baseUrl: String = "http://api-edu.gtl.ai/api/v1/imagesearch/"
@@ -47,6 +53,8 @@ class ReverseImageSearch : AppCompatActivity() {
             }
         }
 
+        manager = LinearLayoutManager(this)
+
 
     }
 
@@ -62,9 +70,15 @@ class ReverseImageSearch : AppCompatActivity() {
                 override fun onResponse(response: JSONArray) {
                     // do anything with response
                     // Printing thumbnail links for now..
-                    for (i in 0 until response.length()) {
-                        println(response.getJSONObject(i).getString("thumbnail_link"))
+//                    for (i in 0 until response.length()) {
+//                        println(response.getJSONObject(i).getString("thumbnail_link"))
+//                    }
+                    recyclerView = findViewById<RecyclerView>(R.id.recycler_view).apply {
+                        myAdapter = ImageAdapter(response)
+                        layoutManager = manager
+                        adapter = myAdapter
                     }
+
                 }
 
                 override fun onError(error: ANError) {
