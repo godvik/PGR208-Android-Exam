@@ -7,4 +7,10 @@
     <string name="upload_selected_area">Upload Selected Area</string>
     <string name="user_selected_image">User selected image</string>
     <string name="upload_btn">Upload</string>
+    <string name="search_google">Search Google</string>
+    <string name="search_bing">Search Bing</string>
+    <string name="search_tineye">Search Tineye</string>
+    <string name="reverse_image_search_result">Reverse image search result</string>
+    <string name="view">View</string>
+    <string name="save">Save</string>
 </resources>

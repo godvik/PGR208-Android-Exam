@@ -1,30 +1,32 @@
 package no.kristiania.pgr208
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
-import com.androidnetworking.error.ANError
-
-import org.json.JSONArray
-import com.androidnetworking.interfaces.JSONArrayRequestListener
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.androidnetworking.AndroidNetworking
 import com.androidnetworking.common.Priority
+import com.androidnetworking.error.ANError
+import com.androidnetworking.interfaces.JSONArrayRequestListener
+import org.json.JSONArray
 
 
 class ReverseImageSearch : AppCompatActivity() {
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var manager: RecyclerView.LayoutManager
+    private lateinit var myAdapter: RecyclerView.Adapter<*>
 
+    val list = ArrayList<ImageProperty>()
 
     private val baseUrl: String = "http://api-edu.gtl.ai/api/v1/imagesearch/"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reverse_image_search)
 
-        val imageUrl = intent.getStringExtra("Image_URL")
 
-        val textView: TextView = findViewById(R.id.textView)
-        textView.setText(imageUrl)
+        val imageUrl = intent.getStringExtra("Image_URL")
 
         val searchGoogleBtn: Button = findViewById(R.id.searchGoogle)
         searchGoogleBtn.setOnClickListener {
@@ -47,24 +49,37 @@ class ReverseImageSearch : AppCompatActivity() {
             }
         }
 
+        manager = LinearLayoutManager(this)
 
     }
 
-    private fun reverseImageSearch(baseUrl: String, imageUrl: String, site: String) {
-        Toast.makeText(this, "Making get request to $site endpoint", Toast.LENGTH_LONG).show()
 
-        AndroidNetworking.get(baseUrl + site)
+    private fun reverseImageSearch(baseUrl: String, imageUrl: String, endpoint: String) {
+        val textView: TextView = findViewById(R.id.textView)
+        textView.setText("Searching for similar images on $endpoint..")
+
+        AndroidNetworking.get(baseUrl + endpoint)
             .addQueryParameter("url", imageUrl)
             .setTag("test")
             .setPriority(Priority.LOW)
             .build()
             .getAsJSONArray(object : JSONArrayRequestListener {
                 override fun onResponse(response: JSONArray) {
-                    // do anything with response
-                    // Printing thumbnail links for now..
                     for (i in 0 until response.length()) {
-                        println(response.getJSONObject(i).getString("thumbnail_link"))
+                        list.add(
+                            ImageProperty(
+                                response.getJSONObject(i).getString("thumbnail_link"),
+                                response.getJSONObject(i).getString("image_link")
+                            )
+                        )
                     }
+                    textView.setText("Found ${response.length()} results from $endpoint")
+                    recyclerView = findViewById<RecyclerView>(R.id.recycler_view).apply {
+                        myAdapter = ImageAdapter(list)
+                        layoutManager = manager
+                        adapter = myAdapter
+                    }
+
                 }
 
                 override fun onError(error: ANError) {
@@ -76,3 +91,4 @@ class ReverseImageSearch : AppCompatActivity() {
             })
     }
 }
+
