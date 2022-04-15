@@ -1,3 +1,12 @@
 package no.kristiania.pgr208
 
-data class DatabaseImage(val id: Int, val image: ByteArray)
+import java.util.*
+
+data class DatabaseImage(val id: Int = getAutoId(), val image: ByteArray) {
+    companion object {
+        fun getAutoId(): Int {
+            val random = Random()
+            return random.nextInt(100)
+        }
+    }
+}

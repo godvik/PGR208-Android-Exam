@@ -19,10 +19,7 @@ import com.androidnetworking.AndroidNetworking
 import com.androidnetworking.common.Priority
 import com.androidnetworking.error.ANError
 import com.androidnetworking.interfaces.StringRequestListener
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.OutputStream
+import java.io.*
 import java.util.*
 
 
@@ -33,11 +30,15 @@ class MainActivity : AppCompatActivity() {
     var uploadedImageURL: String? = null
     private var bitmap: Bitmap? = null
 
+    lateinit var db: DatabaseHandler
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         requestPermission()
         AndroidNetworking.initialize(applicationContext)
+
+        db = DatabaseHandler(this)
 
         imgView = findViewById(R.id.iv_userImage)
         val galleryLauncher =
@@ -57,10 +58,11 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-//        UPLOAD IMAGE TO SERVER
+//        Upload image to server and save it to local db
         val uploadBtn: Button = findViewById(R.id.uploadBtn)
         uploadBtn.setOnClickListener {
             uploadImage()
+            db.addImage(DatabaseImage(1, getBytes(bitmap!!)))
         }
 
 
@@ -68,8 +70,13 @@ class MainActivity : AppCompatActivity() {
         val selectImageBtn: Button = findViewById(R.id.selectImageBtn)
         selectImageBtn.setOnClickListener {
             galleryLauncher.launch("image/*")
-
         }
+    }
+
+    fun getBytes(bitmap: Bitmap): ByteArray {
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream)
+        return stream.toByteArray()
     }
 
 
