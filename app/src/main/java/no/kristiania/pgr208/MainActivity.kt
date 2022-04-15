@@ -1,7 +1,12 @@
 package no.kristiania.pgr208
 
+import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
@@ -14,14 +19,19 @@ import com.androidnetworking.AndroidNetworking
 import com.androidnetworking.common.Priority
 import com.androidnetworking.error.ANError
 import com.androidnetworking.interfaces.StringRequestListener
-import no.kristiania.pgr208.utils.URIPathHelper
 import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.OutputStream
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var imgView: ImageView
     private var imageFile: File? = null
     var uploadedImageURL: String? = null
+    private var bitmap: Bitmap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,11 +39,22 @@ class MainActivity : AppCompatActivity() {
         requestPermission()
         AndroidNetworking.initialize(applicationContext)
 
+        imgView = findViewById(R.id.iv_userImage)
+        val galleryLauncher =
+            registerForActivityResult(ActivityResultContracts.GetContent()) { data ->
+                val inputStream = contentResolver.openInputStream(data)
+                bitmap = BitmapFactory.decodeStream(inputStream)
+                imgView.setImageBitmap(bitmap)
+                var imagePath = bitmapToFile(bitmap!!)
+                imageFile = File(imagePath.toString())
+            }
+
         val searchImages: Button = findViewById(R.id.searchResultsBtn)
         searchImages.setOnClickListener {
             val i = Intent(this, ReverseImageSearch::class.java)
             i.putExtra("Image_URL", uploadedImageURL)
             startActivity(i)
+
         }
 
 //        UPLOAD IMAGE TO SERVER
@@ -46,24 +67,34 @@ class MainActivity : AppCompatActivity() {
 //        SELECT IMAGE FROM GALLERY
         val selectImageBtn: Button = findViewById(R.id.selectImageBtn)
         selectImageBtn.setOnClickListener {
-            val i = Intent()
-            i.action = Intent.ACTION_GET_CONTENT
-            i.type = "image/*"
-            startForResult.launch(i)
+            galleryLauncher.launch("image/*")
+
         }
     }
 
-    private var startForResult =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            val uriPathHelper = URIPathHelper()
-            val imageUri = it.data?.data
-            val image: ImageView = findViewById(R.id.iv_userImage)
-            image.setImageURI(imageUri)
-            val imagePath = imageUri?.let { it1 -> uriPathHelper.getPath(this, it1) }
-            if (!imagePath.isNullOrBlank())
-                imageFile = File(imagePath)
-            Toast.makeText(this, "Image selected", Toast.LENGTH_LONG).show()
+
+    // Method to save an bitmap to a file
+    private fun bitmapToFile(bitmap: Bitmap): Uri {
+        // Get the context wrapper
+        val wrapper = ContextWrapper(applicationContext)
+
+        // Initialize a new file instance to save bitmap object
+        var file = wrapper.getDir("Images", Context.MODE_PRIVATE)
+        file = File(file, "${UUID.randomUUID()}.png")
+
+        try {
+            // Compress the bitmap and save in png format
+            val stream: OutputStream = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+            stream.flush()
+            stream.close()
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
+
+        // Return the saved bitmap uri
+        return Uri.parse(file.absolutePath)
+    }
 
 
     private fun uploadImage() {

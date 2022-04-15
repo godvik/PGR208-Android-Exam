@@ -49,7 +49,7 @@ class ReverseImageSearch : AppCompatActivity() {
             if (imageUrl != null) {
                 reverseImageSearch(baseUrl, imageUrl, "tineye")
             }
-            addRecord()
+
         }
 
         manager = LinearLayoutManager(this)
@@ -57,19 +57,19 @@ class ReverseImageSearch : AppCompatActivity() {
     }
 
 
-    fun addRecord() {
-        val thumbnail = "https://th.bing.com/th/id/OIP.e0eE8jT_sqZo38r8ywfalAAAAA?pid=ImgDet&w=207&h=207&c=7"
-        val image = "https://th.bing.com/th/id/OIP.e0eE8jT_sqZo38r8ywfalAAAAA?pid=ImgDet&w=207&h=207&c=7"
-        val databaseHandler: DatabaseHandler = DatabaseHandler(this)
-
-        val status = databaseHandler.addImage(DatabaseImage(0, thumbnail, image))
-
-        if (status > -1) {
-            Toast.makeText(applicationContext, "Record saved", Toast.LENGTH_LONG).show()
-        }
-
-        println(databaseHandler.viewImage())
-    }
+//    fun addRecord() {
+//        val thumbnail = "https://th.bing.com/th/id/OIP.e0eE8jT_sqZo38r8ywfalAAAAA?pid=ImgDet&w=207&h=207&c=7"
+//        val image = "https://th.bing.com/th/id/OIP.e0eE8jT_sqZo38r8ywfalAAAAA?pid=ImgDet&w=207&h=207&c=7"
+//        val databaseHandler: DatabaseHandler = DatabaseHandler(this)
+//
+//        val status = databaseHandler.addImage(DatabaseImage(0, thumbnail, image))
+//
+//        if (status > -1) {
+//            Toast.makeText(applicationContext, "Record saved", Toast.LENGTH_LONG).show()
+//        }
+//
+//        println(databaseHandler.viewImage())
+//    }
 
     private fun reverseImageSearch(baseUrl: String, imageUrl: String, endpoint: String) {
         val textView: TextView = findViewById(R.id.textView)

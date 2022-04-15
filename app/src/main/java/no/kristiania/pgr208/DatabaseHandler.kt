@@ -35,7 +35,7 @@ class DatabaseHandler(context: Context) :
         val db = this.writableDatabase
 
         val contentValues = ContentValues()
-        contentValues.put(KEY_THUMBNAIL, img.thumbnail)
+//        contentValues.put(KEY_THUMBNAIL, img.thumbnail)
         contentValues.put(KEY_IMAGE, img.image)
 
         // Insert row
@@ -45,40 +45,38 @@ class DatabaseHandler(context: Context) :
         return success
     }
 
-    fun viewImage(): ArrayList<DatabaseImage> {
-
-        val imgList: ArrayList<DatabaseImage> = ArrayList()
-
-        val selectQuery = "SELECT * FROM $TABLE_CONTACTS"
-
-        val db = this.readableDatabase
-        var cursor: Cursor? = null
-
-        try {
-            cursor = db.rawQuery(selectQuery, null)
-        } catch (e: SQLiteException) {
-            db.execSQL(selectQuery)
-            return ArrayList()
-        }
-
-        var id: Int
-        var thumbnail: String
-        var image: String
-
-        if (cursor.moveToFirst()) {
-            do {
-                id = cursor.getInt(cursor.getColumnIndex(KEY_ID))
-                thumbnail = cursor.getString(cursor.getColumnIndex(KEY_THUMBNAIL))
-                image = cursor.getString(cursor.getColumnIndex(KEY_IMAGE))
-
-                val img = DatabaseImage(id = id, thumbnail = thumbnail, image = image)
-                imgList.add(img)
-            } while (cursor.moveToNext())
-        }
-
-        return imgList
-
-    }
+//    fun viewImage(): ArrayList<DatabaseImage> {
+//
+//        val imgList: ArrayList<DatabaseImage> = ArrayList()
+//        val selectQuery = "SELECT * FROM $TABLE_CONTACTS"
+//
+//        val db = this.readableDatabase
+//        var cursor: Cursor? = null
+//
+//        try {
+//            cursor = db.rawQuery(selectQuery, null)
+//        } catch (e: SQLiteException) {
+//            db.execSQL(selectQuery)
+//            return ArrayList()
+//        }
+//
+//        var id: Int
+//        var thumbnail: String
+//        var image: String
+//
+//        if (cursor.moveToFirst()) {
+//            do {
+//                id = cursor.getInt(cursor.getColumnIndex(KEY_ID))
+//                image = cursor.getString(cursor.getColumnIndex(KEY_IMAGE))
+//
+//                val img = DatabaseImage(id = id, image = image)
+//                imgList.add(img)
+//            } while (cursor.moveToNext())
+//        }
+//
+//        return imgList
+//
+//    }
 
     fun deleteImage(img: DatabaseImage): Int {
         val db = this.writableDatabase
