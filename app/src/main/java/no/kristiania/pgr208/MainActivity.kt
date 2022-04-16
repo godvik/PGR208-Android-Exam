@@ -19,6 +19,8 @@ import com.androidnetworking.AndroidNetworking
 import com.androidnetworking.common.Priority
 import com.androidnetworking.error.ANError
 import com.androidnetworking.interfaces.StringRequestListener
+import no.kristiania.pgr208.Constants.baseUrl
+import no.kristiania.pgr208.utils.BitmapHelper.getBytes
 import java.io.*
 import java.util.*
 
@@ -30,7 +32,7 @@ class MainActivity : AppCompatActivity() {
     var uploadedImageURL: String? = null
     private var bitmap: Bitmap? = null
 
-    lateinit var db: DatabaseHandler
+    private lateinit var db: DatabaseHandler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +48,7 @@ class MainActivity : AppCompatActivity() {
                 val inputStream = contentResolver.openInputStream(data)
                 bitmap = BitmapFactory.decodeStream(inputStream)
                 imgView.setImageBitmap(bitmap)
-                var imagePath = bitmapToFile(bitmap!!)
+                val imagePath = bitmapToFile(bitmap!!)
                 imageFile = File(imagePath.toString())
             }
 
@@ -65,20 +67,12 @@ class MainActivity : AppCompatActivity() {
             db.addUploadedImage(DatabaseImage(1, getBytes(bitmap!!)))
         }
 
-
 //        SELECT IMAGE FROM GALLERY
         val selectImageBtn: Button = findViewById(R.id.selectImageBtn)
         selectImageBtn.setOnClickListener {
             galleryLauncher.launch("image/*")
         }
     }
-
-    fun getBytes(bitmap: Bitmap): ByteArray {
-        val stream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream)
-        return stream.toByteArray()
-    }
-
 
     // Method to save an bitmap to a file
     private fun bitmapToFile(bitmap: Bitmap): Uri {
@@ -106,27 +100,25 @@ class MainActivity : AppCompatActivity() {
 
     private fun uploadImage() {
         val tvProgress: TextView = findViewById(R.id.tv_progress)
-        AndroidNetworking.upload("http://api-edu.gtl.ai/api/v1/imagesearch/upload")
+        tvProgress.text = getString(R.string.upload_img)
+        AndroidNetworking.upload(baseUrl + "upload")
             .addHeaders("Content-Disposition:", "form-data")
             .addHeaders("Content-Type:", "image/png")
             .addMultipartFile("image", imageFile)
             .setPriority(Priority.HIGH)
             .build()
-            .setUploadProgressListener { bytesUploaded, totalBytes -> // do anything with progress
-                tvProgress.text = "Uploading image.."
-            }
             .getAsString(object : StringRequestListener {
                 override fun onResponse(response: String) {
                     Toast.makeText(this@MainActivity, response, Toast.LENGTH_SHORT).show()
                     uploadedImageURL = response
-                    tvProgress.text = "Image uploaded successfully!"
+                    tvProgress.text = getString(R.string.upload_img_success)
                 }
 
                 override fun onError(anError: ANError) {
                     Toast.makeText(this@MainActivity, anError.message, Toast.LENGTH_SHORT)
                         .show()
                     println(anError)
-                    tvProgress.text = "An error occured while uploading image"
+                    tvProgress.text = getString(R.string.upload_img_error)
                 }
             })
     }
@@ -139,7 +131,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun requestPermission() {
-        var permission = mutableListOf<String>()
+        val permission = mutableListOf<String>()
 
         if (!hasPermission()) {
             permission.add(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)

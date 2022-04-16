@@ -1,6 +1,5 @@
 package no.kristiania.pgr208
 
-import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,15 +10,14 @@ import android.widget.Toast
 import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import java.io.ByteArrayOutputStream
+import no.kristiania.pgr208.utils.BitmapHelper.getBytes
 
 class ImageAdapter(private val data: List<ImageProperty>) :
     RecyclerView.Adapter<ImageAdapter.MyViewHolder>() {
 
 
-
-    class MyViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        lateinit var db: DatabaseHandler
+    class MyViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+        private lateinit var db: DatabaseHandler
         fun bind(property: ImageProperty) {
             val title = view.findViewById<TextView>(R.id.tvTitle)
             val imageView = view.findViewById<ImageView>(R.id.imageView)
@@ -43,13 +41,8 @@ class ImageAdapter(private val data: List<ImageProperty>) :
 
             Glide.with(view.context).load(property.image).centerCrop().into(imageView)
         }
-        fun getBytes(bitmap: Bitmap): ByteArray {
-            val stream = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream)
-            return stream.toByteArray()
-        }
-    }
 
+    }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -64,8 +57,6 @@ class ImageAdapter(private val data: List<ImageProperty>) :
     override fun getItemCount(): Int {
         return data.size
     }
-
-
 
 
 }

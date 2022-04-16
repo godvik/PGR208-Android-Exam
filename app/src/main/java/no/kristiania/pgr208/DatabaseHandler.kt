@@ -11,7 +11,7 @@ class DatabaseHandler(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
-        private const val DATABASE_VERSION = 2
+        private const val DATABASE_VERSION = 3
         private const val DATABASE_NAME = "ImageDatabase"
         private const val TABLE_UPLOADEDIMAGES = "UploadedImagesTable"
         private const val TABLE_SAVEDIMAGES = "SavedImagesTable"
@@ -57,7 +57,7 @@ class DatabaseHandler(context: Context) :
         if (cursor.moveToLast()) {
             id = cursor.getInt(0) //to get id, 0 is the column index
         }
-
+        cursor.close()
         contentValues.put(KEY_RESULTID, id)
         contentValues.put(KEY_SAVEDIMAGE, img.image)
         // Insert row
@@ -74,7 +74,7 @@ class DatabaseHandler(context: Context) :
         val selectQuery = "SELECT * FROM $TABLE_UPLOADEDIMAGES"
 
         val db = this.readableDatabase
-        var cursor: Cursor? = null
+        val cursor: Cursor?
 
         try {
             cursor = db.rawQuery(selectQuery, null)
@@ -95,6 +95,7 @@ class DatabaseHandler(context: Context) :
                 imgList.add(img)
             } while (cursor.moveToNext())
         }
+        cursor.close()
 
         return imgList
 
