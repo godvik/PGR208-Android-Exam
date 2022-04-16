@@ -11,42 +11,67 @@ class DatabaseHandler(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
-        private const val DATABASE_VERSION = 1
+        private const val DATABASE_VERSION = 2
         private const val DATABASE_NAME = "ImageDatabase"
-        private const val TABLE_CONTACTS = "SavedImagesTable"
+        private const val TABLE_UPLOADEDIMAGES = "UploadedImagesTable"
+        private const val TABLE_SAVEDIMAGES = "SavedImagesTable"
 
         private const val KEY_ID = "_id"
-        private const val KEY_IMAGE = "image"
+        private const val KEY_RESULTID = "_resultid"
+        private const val KEY_UPLOADIMAGE = "image"
+        private const val KEY_SAVEDIMAGE = "image"
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
-        val CREATE_CONTACTS_TABLE =
-            ("CREATE TABLE " + TABLE_CONTACTS + "(" + KEY_ID + " INTEGER PRIMARY KEY," + KEY_IMAGE + " BLOB" + ")")
-        db?.execSQL(CREATE_CONTACTS_TABLE)
+        val CREATE_UPLOADEDIMAGES_TABLE =
+            ("CREATE TABLE $TABLE_UPLOADEDIMAGES($KEY_ID INTEGER PRIMARY KEY,$KEY_UPLOADIMAGE BLOB)")
+        val CREATE_SAVEDIMAGES_TABLE =
+            ("CREATE TABLE $TABLE_SAVEDIMAGES($KEY_ID INTEGER PRIMARY KEY, $KEY_RESULTID references $TABLE_SAVEDIMAGES($KEY_ID),  $KEY_SAVEDIMAGE BLOB)")
+
+        db?.execSQL(CREATE_UPLOADEDIMAGES_TABLE)
+        db?.execSQL(CREATE_SAVEDIMAGES_TABLE)
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        db!!.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACTS)
+        db!!.execSQL("DROP TABLE IF EXISTS $TABLE_UPLOADEDIMAGES")
+        db!!.execSQL("DROP TABLE IF EXISTS $TABLE_SAVEDIMAGES")
         onCreate(db)
     }
 
-    fun addImage(img: DatabaseImage): Long {
+    fun addUploadedImage(img: DatabaseImage): Long {
         val db = this.writableDatabase
-
         val contentValues = ContentValues()
-        contentValues.put(KEY_IMAGE, img.image)
-
+        contentValues.put(KEY_UPLOADIMAGE, img.image)
         // Insert row
-        val success = db.insert(TABLE_CONTACTS, null, contentValues)
-
+        val success = db.insert(TABLE_UPLOADEDIMAGES, null, contentValues)
         db.close()
         return success
     }
 
+    fun addSavedImage(img: DatabaseImage): Long {
+        val db = this.writableDatabase
+        val contentValues = ContentValues()
+
+        var id: Int? = null
+        val cursor: Cursor = db.rawQuery("SELECT  * FROM $TABLE_UPLOADEDIMAGES", null)
+        if (cursor.moveToLast()) {
+            id = cursor.getInt(0) //to get id, 0 is the column index
+        }
+
+        contentValues.put(KEY_RESULTID, id)
+        contentValues.put(KEY_SAVEDIMAGE, img.image)
+        // Insert row
+        val success = db.insert(TABLE_SAVEDIMAGES, null, contentValues)
+        db.close()
+        return success
+    }
+
+
+
     fun viewImage(): ArrayList<DatabaseImage> {
 
         val imgList: ArrayList<DatabaseImage> = ArrayList()
-        val selectQuery = "SELECT * FROM $TABLE_CONTACTS"
+        val selectQuery = "SELECT * FROM $TABLE_UPLOADEDIMAGES"
 
         val db = this.readableDatabase
         var cursor: Cursor? = null
@@ -64,7 +89,7 @@ class DatabaseHandler(context: Context) :
         if (cursor.moveToFirst()) {
             do {
                 id = cursor.getInt(cursor.getColumnIndex(KEY_ID))
-                image = cursor.getBlob(cursor.getColumnIndex(KEY_IMAGE))
+                image = cursor.getBlob(cursor.getColumnIndex(KEY_UPLOADIMAGE))
 
                 val img = DatabaseImage(id = id, image = image)
                 imgList.add(img)
@@ -80,7 +105,7 @@ class DatabaseHandler(context: Context) :
         val contentValues = ContentValues()
         contentValues.put(KEY_ID, img.id)
 
-        val success = db.delete(TABLE_CONTACTS, KEY_ID + "=" + img.id, null)
+        val success = db.delete(TABLE_UPLOADEDIMAGES, KEY_ID + "=" + img.id, null)
         db.close()
         return success
     }

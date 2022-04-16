@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
         val uploadBtn: Button = findViewById(R.id.uploadBtn)
         uploadBtn.setOnClickListener {
             uploadImage()
-            db.addImage(DatabaseImage(1, getBytes(bitmap!!)))
+            db.addUploadedImage(DatabaseImage(1, getBytes(bitmap!!)))
         }
 
 
