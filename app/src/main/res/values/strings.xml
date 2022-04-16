@@ -13,4 +13,9 @@
     <string name="reverse_image_search_result">Reverse image search result</string>
     <string name="view">View</string>
     <string name="save">Save</string>
+    <string name="results_found">Found %1$d results from %2$s</string>
+    <string name="similar_images">Searching for similar images on %1$s..</string>
+    <string name="upload_img">Uploading image..</string>
+    <string name="upload_img_success">Image uploaded successfully!</string>
+    <string name="upload_img_error">An error occured while uploading image</string>
 </resources>
