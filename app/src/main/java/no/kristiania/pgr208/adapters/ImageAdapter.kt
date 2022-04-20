@@ -1,4 +1,4 @@
-package no.kristiania.pgr208
+package no.kristiania.pgr208.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +10,11 @@ import android.widget.Toast
 import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import no.kristiania.pgr208.utils.BitmapHelper.getBytes
+import no.kristiania.pgr208.DatabaseHandler
+import no.kristiania.pgr208.DatabaseImage
+import no.kristiania.pgr208.ImageProperty
+import no.kristiania.pgr208.R
+import no.kristiania.pgr208.utils.BitmapHelper
 
 class ImageAdapter(private val data: List<ImageProperty>) :
     RecyclerView.Adapter<ImageAdapter.MyViewHolder>() {
@@ -31,7 +35,7 @@ class ImageAdapter(private val data: List<ImageProperty>) :
                 val drawable = imageView.drawable
                 val bitmap = drawable.toBitmap()
 
-                db.addSavedImage(DatabaseImage(1, getBytes(bitmap)))
+                db.addSavedImage(DatabaseImage(1, BitmapHelper.getBytes(bitmap)))
                 Toast.makeText(view.context, "Added to db", Toast.LENGTH_SHORT).show()
             }
 

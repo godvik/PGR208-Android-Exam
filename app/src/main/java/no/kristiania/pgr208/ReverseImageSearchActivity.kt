@@ -11,10 +11,11 @@ import com.androidnetworking.common.Priority
 import com.androidnetworking.error.ANError
 import com.androidnetworking.interfaces.JSONArrayRequestListener
 import no.kristiania.pgr208.Constants.baseUrl
+import no.kristiania.pgr208.adapters.ImageAdapter
 import org.json.JSONArray
 
 
-class ReverseImageSearch : AppCompatActivity() {
+class ReverseImageSearchActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var manager: RecyclerView.LayoutManager

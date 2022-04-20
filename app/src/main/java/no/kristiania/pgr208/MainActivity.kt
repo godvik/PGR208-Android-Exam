@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
 
         val searchImages: Button = findViewById(R.id.searchResultsBtn)
         searchImages.setOnClickListener {
-            val i = Intent(this, ReverseImageSearch::class.java)
+            val i = Intent(this, ReverseImageSearchActivity::class.java)
             i.putExtra("Image_URL", uploadedImageURL)
             startActivity(i)
 
@@ -64,13 +64,19 @@ class MainActivity : AppCompatActivity() {
         val uploadBtn: Button = findViewById(R.id.uploadBtn)
         uploadBtn.setOnClickListener {
             uploadImage()
-            db.addUploadedImage(DatabaseImage(1, getBytes(bitmap!!)))
+
         }
 
 //        SELECT IMAGE FROM GALLERY
         val selectImageBtn: Button = findViewById(R.id.selectImageBtn)
         selectImageBtn.setOnClickListener {
             galleryLauncher.launch("image/*")
+        }
+
+        val savedResultsBtn: Button = findViewById(R.id.savedResultsBtn)
+        savedResultsBtn.setOnClickListener {
+            val i = Intent(this, SavedResultsActivity::class.java)
+            startActivity(i)
         }
     }
 
@@ -111,13 +117,17 @@ class MainActivity : AppCompatActivity() {
                 override fun onResponse(response: String) {
                     Toast.makeText(this@MainActivity, response, Toast.LENGTH_SHORT).show()
                     uploadedImageURL = response
+                    db.addUploadedImage(DatabaseImage(1, getBytes(bitmap!!)))
                     tvProgress.text = getString(R.string.upload_img_success)
                 }
 
                 override fun onError(anError: ANError) {
                     Toast.makeText(this@MainActivity, anError.message, Toast.LENGTH_SHORT)
                         .show()
-                    println(anError)
+                    println(anError.errorCode)
+                    println(anError.message)
+                    println(anError.errorDetail)
+                    println(anError.errorBody)
                     tvProgress.text = getString(R.string.upload_img_error)
                 }
             })
