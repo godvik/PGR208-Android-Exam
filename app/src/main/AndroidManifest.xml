@@ -19,7 +19,7 @@
         <activity
             android:name=".ReverseImageSearchActivity"
             android:exported="false" />
-        <activity android:name=".SavedResultsActivity"
+        <activity android:name=".DatabaseImagesActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

@@ -10,8 +10,10 @@ import android.database.sqlite.SQLiteOpenHelper
 class DatabaseHandler(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
+
+    //    Constants for tablenames and columns. Increment DATABASE_VERSION to apply database changes
     companion object {
-        private const val DATABASE_VERSION = 5
+        private const val DATABASE_VERSION = 6
         private const val DATABASE_NAME = "ImageDatabase"
         private const val TABLE_UPLOADEDIMAGES = "UploadedImagesTable"
         private const val TABLE_SAVEDIMAGES = "SavedImagesTable"
@@ -52,12 +54,15 @@ class DatabaseHandler(context: Context) :
         val db = this.writableDatabase
         val contentValues = ContentValues()
 
+//        Get the ID of the latest uploaded image and insert it into db to create relation between saved images and uploaded images
         var id: Int? = null
         val cursor: Cursor = db.rawQuery("SELECT  * FROM $TABLE_UPLOADEDIMAGES", null)
         if (cursor.moveToLast()) {
-            id = cursor.getInt(0) //to get id, 0 is the column index
+//            Set the cursor to the first column (id column) and to the last entry
+            id = cursor.getInt(0)
         }
         cursor.close()
+
         contentValues.put(KEY_UPLOADID, id)
         contentValues.put(KEY_SAVEDIMAGE, img.image)
         // Insert row
@@ -66,15 +71,14 @@ class DatabaseHandler(context: Context) :
         return success
     }
 
-
-
+    //    Select all uploaded images and return them in a list
     fun viewImage(): ArrayList<DatabaseImage> {
-
         val imgList: ArrayList<DatabaseImage> = ArrayList()
         val selectQuery = "SELECT * FROM $TABLE_UPLOADEDIMAGES"
-
         val db = this.readableDatabase
         val cursor: Cursor?
+        var id: Int
+        var image: ByteArray
 
         try {
             cursor = db.rawQuery(selectQuery, null)
@@ -82,10 +86,6 @@ class DatabaseHandler(context: Context) :
             db.execSQL(selectQuery)
             return ArrayList()
         }
-
-        var id: Int
-        var image: ByteArray
-
         if (cursor.moveToFirst()) {
             do {
                 id = cursor.getInt(cursor.getColumnIndex(KEY_UPLOADID))
@@ -96,17 +96,18 @@ class DatabaseHandler(context: Context) :
             } while (cursor.moveToNext())
         }
         cursor.close()
-
         return imgList
-
     }
 
-    fun getRelatedImages(): ArrayList<DatabaseImage> {
+    //    Select all the images related to the ID of the original image. Add them and the original image to a list and return it
+    fun getRelatedImages(id: Int): ArrayList<DatabaseImage> {
         val imgList: ArrayList<DatabaseImage> = ArrayList()
-        val selectQuery = "SELECT SavedImagesTable.result_id, SavedImagesTable.saved_image, UploadedImagesTable.uploaded_image FROM SavedImagesTable JOIN UploadedImagesTable ON SavedImagesTable.upload_id = UploadedImagesTable.upload_id"
-
+        val selectQuery =
+            "SELECT $TABLE_SAVEDIMAGES.$KEY_RESULTID, $TABLE_SAVEDIMAGES.$KEY_SAVEDIMAGE, $TABLE_UPLOADEDIMAGES.$KEY_UPLOADIMAGE FROM $TABLE_SAVEDIMAGES JOIN $TABLE_UPLOADEDIMAGES ON $TABLE_SAVEDIMAGES.$KEY_UPLOADID = $TABLE_UPLOADEDIMAGES.$KEY_UPLOADID WHERE $TABLE_UPLOADEDIMAGES.$KEY_UPLOADID = $id"
         val db = this.readableDatabase
         val cursor: Cursor?
+        var id: Int
+        var image: ByteArray
 
         try {
             cursor = db.rawQuery(selectQuery, null)
@@ -114,16 +115,13 @@ class DatabaseHandler(context: Context) :
             db.execSQL(selectQuery)
             return ArrayList()
         }
-
-        var id: Int
-        var image: ByteArray
-
         if (cursor.moveToFirst()) {
+//            Add the original image to the list first
             id = cursor.getInt(cursor.getColumnIndex(KEY_RESULTID))
             image = cursor.getBlob(cursor.getColumnIndex(KEY_UPLOADIMAGE))
             val originalImage = DatabaseImage(id = id, image = image)
             imgList.add(originalImage)
-
+//            Add the rest of the images
             do {
                 id = cursor.getInt(cursor.getColumnIndex(KEY_RESULTID))
                 image = cursor.getBlob(cursor.getColumnIndex(KEY_SAVEDIMAGE))
@@ -135,17 +133,5 @@ class DatabaseHandler(context: Context) :
         cursor.close()
 
         return imgList
-    }
-
-
-
-    fun deleteImage(img: DatabaseImage): Int {
-        val db = this.writableDatabase
-        val contentValues = ContentValues()
-        contentValues.put(KEY_UPLOADID, img.id)
-
-        val success = db.delete(TABLE_UPLOADEDIMAGES, KEY_UPLOADID + "=" + img.id, null)
-        db.close()
-        return success
     }
 }
