@@ -3,22 +3,17 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="../../../../layout/custom_preview.xml" value="0.15416666666666667" />
-        <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.5838541666666667" />
-        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.5838541666666667" />
         <entry key="app/src/main/res/drawable/some_drawable.xml" value="0.63125" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.45989583333333334" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.16558441558441558" />
         <entry key="app/src/main/res/layout/activity_reverse_image_search.xml" value="0.389945652173913" />
-        <entry key="app/src/main/res/layout/activity_saved_results.xml" value="0.6110236220472441" />
-        <entry key="app/src/main/res/layout/horizontal_images.xml" value="0.45063405797101447" />
         <entry key="app/src/main/res/layout/item_custom_row.xml" value="0.5734375" />
         <entry key="app/src/main/res/layout/list_photo.xml" value="0.46927083333333336" />
-        <entry key="app/src/main/res/layout/list_results.xml" value="0.4995471014492754" />
+        <entry key="app/src/main/res/layout/list_searchresult_images.xml" value="0.33" />
         <entry key="app/src/main/res/layout/saved_images.xml" value="0.7067708333333333" />
-        <entry key="app/src/main/res/layout/saved_results.xml" value="0.5041666666666667" />
       </map>
     </option>
   </component>
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
