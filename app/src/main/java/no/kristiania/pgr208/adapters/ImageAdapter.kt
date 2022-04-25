@@ -41,7 +41,7 @@ class ImageAdapter(private var context: Context, private val data: List<ImageUrl
                 }
             }
 
-            Glide.with(view.context).load(property.image).centerCrop().into(imageView)
+            Glide.with(view.context).load(property.image).error(R.drawable.broken).centerCrop().into(imageView)
         }
     }
 
