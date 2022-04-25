@@ -1,10 +1,13 @@
 package no.kristiania.pgr208
 
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -16,9 +19,14 @@ import com.androidnetworking.AndroidNetworking
 import com.androidnetworking.common.Priority
 import com.androidnetworking.error.ANError
 import com.androidnetworking.interfaces.StringRequestListener
+import com.bumptech.glide.Glide
 import no.kristiania.pgr208.Constants.baseUrl
 import no.kristiania.pgr208.utils.BitmapHelper.bitmapToFileUri
 import no.kristiania.pgr208.utils.BitmapHelper.getBytes
+import com.theartofdev.edmodo.cropper.CropImage
+import com.edmodo.cropper.CropImageView
+import android.graphics.drawable.BitmapDrawable
+
 import java.io.*
 import java.util.*
 
@@ -30,6 +38,9 @@ class MainActivity : AppCompatActivity() {
     var uploadedImageURL: String? = null
     private var bitmap: Bitmap? = null
     private lateinit var db: DatabaseHandler
+    public lateinit var image: CropImageView
+    public var imageUri: String? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +63,17 @@ class MainActivity : AppCompatActivity() {
                 imageFile = File(imagePath.toString())
             }
 
+//        Launch the galleryPicker
+        val selectImageBtn: Button = findViewById(R.id.selectImageBtn)
+        selectImageBtn.setOnClickListener {
+            var i = Intent()
+
+            i.action = Intent.ACTION_GET_CONTENT
+            i.type = "image/*"
+
+            galleryLauncher.launch(i.toString())
+        }
+
 //        Sends the uploadedImageURL to the next activity to be used for GET requests
         val searchImages: Button = findViewById(R.id.searchResultsBtn)
         searchImages.setOnClickListener {
@@ -61,24 +83,18 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-//        Upload image to server and save it to local db
-        val uploadBtn: Button = findViewById(R.id.uploadBtn)
-        uploadBtn.setOnClickListener {
-            uploadImage()
-        }
-
-//        Launch the galleryPicker
-        val selectImageBtn: Button = findViewById(R.id.selectImageBtn)
-        selectImageBtn.setOnClickListener {
-            galleryLauncher.launch("image/*")
-        }
-
 //        Navigate to the results activity
         val savedResultsBtn: Button = findViewById(R.id.savedResultsBtn)
         savedResultsBtn.setOnClickListener {
             val i = Intent(this, DatabaseImagesActivity::class.java)
             startActivity(i)
         }
+//        Upload image to server and save it to local db
+        val uploadBtn: Button = findViewById(R.id.uploadBtn)
+        uploadBtn.setOnClickListener {
+            uploadImage()
+        }
+
     }
 
     //    Uploads the previously created imageFile. On success it also saves the imageFile to the database as a BLOB
@@ -108,7 +124,7 @@ class MainActivity : AppCompatActivity() {
             })
     }
 
-//    Check is the user has granted the app proper file permissions. If not, it requests it. Gets called in onCreate
+    //    Check is the user has granted the app proper file permissions. If not, it requests it. Gets called in onCreate
     private fun hasPermission(): Boolean {
         return ActivityCompat.checkSelfPermission(
             this,

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="no.kristiania.pgr208">
+    package="no.kristiania.pgr208" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -14,18 +14,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PGR208"
-        android:usesCleartextTraffic="true"
-        >
+        android:usesCleartextTraffic="true" >
         <activity
             android:name=".ReverseImageSearchActivity"
             android:exported="false" />
-        <activity android:name=".DatabaseImagesActivity"
+        <activity
+            android:name=".DatabaseImagesActivity"
             android:exported="false" />
-        <activity android:name=".FullScreenImageActivity"
+        <activity
+            android:name=".FullScreenImageActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
