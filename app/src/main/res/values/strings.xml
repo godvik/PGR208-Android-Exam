@@ -23,4 +23,6 @@
     <string name="close">Close</string>
     <string name="delete">Delete</string>
     <string name="image_from_database">Image from database</string>
+    <string name="delete_dialog">Are you sure you want to delete this image? If you delete the original image, all related images will also be deleted!</string>
+    <string name="cancel">Cancel</string>
 </resources>

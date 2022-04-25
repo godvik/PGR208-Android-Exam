@@ -3,10 +3,8 @@ package no.kristiania.pgr208
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
-import no.kristiania.pgr208.utils.BitmapHelper.getBitmap
 
 class FullScreenImageActivity : AppCompatActivity() {
     private lateinit var db: DatabaseHandler
@@ -32,14 +30,16 @@ class FullScreenImageActivity : AppCompatActivity() {
         val btnDelete = findViewById<Button>(R.id.btnDelete)
 
 
-//        Delete image from saved images table. If the function returns false, we know that it is the original image
-//        and can instead query to delete it from the other table
+
+//        Pass the imageId to a confirm deletion dialog fragment
         btnDelete?.setOnClickListener {
-            if (!db.deleteImage(imageId)) {
-                db.deleteUploadedImage(imageId)
+            val bundle = Bundle()
+            bundle.putInt("imageId", imageId)
+            val dialog = DeleteDialogFragment()
+            dialog.arguments = bundle
+            dialog.show(supportFragmentManager, "deleteDialog")
             }
-            finish()
-        }
+
 
         btnClose.setOnClickListener {
             finish()
