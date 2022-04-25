@@ -22,9 +22,11 @@ class ReverseImageSearchActivity : AppCompatActivity() {
     private lateinit var myAdapter: RecyclerView.Adapter<*>
     val list = ArrayList<ImageUrls>()
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reverse_image_search)
+
 
 //        Get the imageURL intent from the previous activity and send it along with endpoints to GET requests as long as its not null
         val imageUrl = intent.getStringExtra("Image_URL")
@@ -76,7 +78,7 @@ class ReverseImageSearchActivity : AppCompatActivity() {
                     }
                     textView.text = getString(R.string.results_found, response.length(), endpoint)
                     recyclerView = findViewById<RecyclerView>(R.id.recycler_view).apply {
-                        myAdapter = ImageAdapter(list)
+                        myAdapter = ImageAdapter(context,list)
                         layoutManager = manager
                         adapter = myAdapter
                     }
