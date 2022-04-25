@@ -103,7 +103,7 @@ class DatabaseHandler(context: Context) :
     fun getRelatedImages(id: Int): ArrayList<DatabaseImage> {
         val imgList: ArrayList<DatabaseImage> = ArrayList()
         val selectQuery =
-            "SELECT $TABLE_SAVEDIMAGES.$KEY_RESULTID, $TABLE_SAVEDIMAGES.$KEY_SAVEDIMAGE, $TABLE_UPLOADEDIMAGES.$KEY_UPLOADIMAGE " +
+            "SELECT $TABLE_SAVEDIMAGES.$KEY_RESULTID, $TABLE_SAVEDIMAGES.$KEY_SAVEDIMAGE, $TABLE_UPLOADEDIMAGES.$KEY_UPLOADIMAGE, $TABLE_UPLOADEDIMAGES.$KEY_UPLOADID " +
                     "FROM $TABLE_SAVEDIMAGES " +
                     "JOIN $TABLE_UPLOADEDIMAGES ON $TABLE_SAVEDIMAGES.$KEY_UPLOADID = $TABLE_UPLOADEDIMAGES.$KEY_UPLOADID " +
                     "WHERE $TABLE_UPLOADEDIMAGES.$KEY_UPLOADID = $id"
@@ -121,7 +121,7 @@ class DatabaseHandler(context: Context) :
         }
         if (cursor.moveToFirst()) {
 //            Add the original image to the list first
-            imageId = cursor.getInt(cursor.getColumnIndex(KEY_RESULTID))
+            imageId = cursor.getInt(cursor.getColumnIndex(KEY_UPLOADID))
             image = cursor.getBlob(cursor.getColumnIndex(KEY_UPLOADIMAGE))
             val originalImage = DatabaseImage(id = imageId, image = image)
             imgList.add(originalImage)
@@ -160,6 +160,11 @@ class DatabaseHandler(context: Context) :
     fun deleteImage(id: Int): Boolean {
         val db = this.writableDatabase
         return db.delete(TABLE_SAVEDIMAGES, "$KEY_RESULTID = $id", null) != 0
+    }
+
+    fun deleteUploadedImage(id: Int): Boolean {
+        val db = this.writableDatabase
+        return db.delete(TABLE_UPLOADEDIMAGES, "$KEY_UPLOADID = $id", null) != 0
     }
 
 }

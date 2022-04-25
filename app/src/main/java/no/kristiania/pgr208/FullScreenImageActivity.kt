@@ -19,7 +19,8 @@ class FullScreenImageActivity : AppCompatActivity() {
         val imageBlob = intent.getByteArrayExtra("imageBlob")
         val imageId = intent.getIntExtra("imageId", -1)
 
-
+//        We use the same activity for 2 slightly different layouts
+//        if the image_link intent is empty, we show the layout with a delete button for saved images
         if (imageUrl.isNullOrBlank()) {
             setContentView(R.layout.activity_fullscreen_delete)
         } else {
@@ -30,9 +31,13 @@ class FullScreenImageActivity : AppCompatActivity() {
         val btnClose = findViewById<Button>(R.id.btnClose)
         val btnDelete = findViewById<Button>(R.id.btnDelete)
 
+
+//        Delete image from saved images table. If the function returns false, we know that it is the original image
+//        and can instead query to delete it from the other table
         btnDelete?.setOnClickListener {
-            Toast.makeText(this, "Image deleted!", Toast.LENGTH_SHORT).show()
-            db.deleteImage(imageId)
+            if (!db.deleteImage(imageId)) {
+                db.deleteUploadedImage(imageId)
+            }
             finish()
         }
 
@@ -40,6 +45,7 @@ class FullScreenImageActivity : AppCompatActivity() {
             finish()
         }
 
+//        Load the imageview with either blob or url, depending on which layout is active
         if (imageUrl.isNullOrEmpty()) {
             Glide.with(this).load(imageBlob).into(imgView)
         } else {
