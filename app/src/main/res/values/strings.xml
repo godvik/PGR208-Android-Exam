@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">PGR208-Exam</string>
     <string name="select_image">Select Image</string>
-    <string name="search_results">Reverse Image search</string>
-    <string name="saved_results">Saved results</string>
+    <string name="search_results">Search Image</string>
+    <string name="saved_results">Saved Images</string>
     <string name="camera_image">Select Image / Take image with camera</string>
     <string name="upload_selected_area">Upload Selected Area</string>
     <string name="user_selected_image">User selected image</string>
@@ -17,5 +17,8 @@
     <string name="similar_images">Searching for similar images on %1$s..</string>
     <string name="upload_img">Uploading image..</string>
     <string name="upload_img_success">Image uploaded successfully!</string>
-    <string name="upload_img_error">An error occured while uploading image</string>
+    <string name="upload_img_error">A %1$s occurred while uploading image</string>
+    <string name="saved_db">Saved!</string>
+    <string name="no_image">No image!</string>
+    <string name="close">Close</string>
 </resources>

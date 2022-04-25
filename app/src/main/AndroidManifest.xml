@@ -17,7 +17,11 @@
         android:usesCleartextTraffic="true"
         >
         <activity
-            android:name=".ReverseImageSearch"
+            android:name=".ReverseImageSearchActivity"
+            android:exported="false" />
+        <activity android:name=".DatabaseImagesActivity"
+            android:exported="false" />
+        <activity android:name=".FullScreenImageActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
