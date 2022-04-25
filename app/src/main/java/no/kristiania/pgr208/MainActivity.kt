@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         requestPermission()
         AndroidNetworking.initialize(applicationContext)
+        AndroidNetworking.enableLogging()
         db = DatabaseHandler(this)
         imgView = findViewById(R.id.iv_userImage)
 
@@ -98,13 +99,11 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onError(anError: ANError) {
-                    Toast.makeText(this@MainActivity, anError.message, Toast.LENGTH_SHORT)
-                        .show()
                     println(anError.errorCode)
                     println(anError.message)
                     println(anError.errorDetail)
                     println(anError.errorBody)
-                    tvProgress.text = getString(R.string.upload_img_error)
+                    tvProgress.text = getString(R.string.upload_img_error, anError.errorDetail)
                 }
             })
     }

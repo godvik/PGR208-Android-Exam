@@ -17,6 +17,7 @@
     <string name="similar_images">Searching for similar images on %1$s..</string>
     <string name="upload_img">Uploading image..</string>
     <string name="upload_img_success">Image uploaded successfully!</string>
-    <string name="upload_img_error">An error occurred while uploading image</string>
+    <string name="upload_img_error">A %1$s occurred while uploading image</string>
     <string name="saved_db">Saved!</string>
+    <string name="no_image">No image!</string>
 </resources>
