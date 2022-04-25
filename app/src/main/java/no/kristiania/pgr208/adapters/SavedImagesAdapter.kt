@@ -19,9 +19,6 @@ class SavedImagesAdapter(private val data: List<DatabaseImage>) :
 
     }
 
-    private val viewPool = RecyclerView.RecycledViewPool()
-
-
     //    Creates X amount of cards from SavedResultsActivity
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.list_db_images, parent, false)
@@ -39,7 +36,7 @@ class SavedImagesAdapter(private val data: List<DatabaseImage>) :
             myAdapter = HorizontalResultsAdapter(db.getRelatedImages(position + 1))
             layoutManager = manager
             adapter = myAdapter
-            setRecycledViewPool(viewPool)
+
         }
     }
 
