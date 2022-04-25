@@ -11,6 +11,7 @@ import no.kristiania.pgr208.utils.BitmapHelper.getBitmap
 class FullScreenImageActivity : AppCompatActivity() {
     private lateinit var db: DatabaseHandler
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         db = DatabaseHandler(this)
@@ -29,7 +30,7 @@ class FullScreenImageActivity : AppCompatActivity() {
         val btnClose = findViewById<Button>(R.id.btnClose)
         val btnDelete = findViewById<Button>(R.id.btnDelete)
 
-        btnDelete.setOnClickListener {
+        btnDelete?.setOnClickListener {
             Toast.makeText(this, "Image deleted!", Toast.LENGTH_SHORT).show()
             db.deleteImage(imageId)
             finish()

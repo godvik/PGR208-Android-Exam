@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import no.kristiania.pgr208.adapters.HorizontalResultsAdapter
 import no.kristiania.pgr208.adapters.SavedImagesAdapter
 
 class DatabaseImagesActivity : AppCompatActivity() {
@@ -21,10 +20,10 @@ class DatabaseImagesActivity : AppCompatActivity() {
 
         manager = LinearLayoutManager(this)
 
-//        Create X amount of cards based on the amount of results from db.viewImage()
+//        Create X amount of cards based on the amount of results from db.getIds()
 
         recyclerView = findViewById<RecyclerView>(R.id.recycler_view).apply {
-            myAdapter = SavedImagesAdapter(db.viewImage())
+            myAdapter = SavedImagesAdapter(db.getIds())
             layoutManager = manager
             adapter = myAdapter
         }
