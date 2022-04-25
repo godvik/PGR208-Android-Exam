@@ -13,7 +13,7 @@ class DatabaseHandler(context: Context) :
 
     //    Constants for tablenames and columns. Increment DATABASE_VERSION to apply database changes
     companion object {
-        private const val DATABASE_VERSION = 6
+        private const val DATABASE_VERSION = 7
         private const val DATABASE_NAME = "ImageDatabase"
         private const val TABLE_UPLOADEDIMAGES = "UploadedImagesTable"
         private const val TABLE_SAVEDIMAGES = "SavedImagesTable"
@@ -103,10 +103,14 @@ class DatabaseHandler(context: Context) :
     fun getRelatedImages(id: Int): ArrayList<DatabaseImage> {
         val imgList: ArrayList<DatabaseImage> = ArrayList()
         val selectQuery =
-            "SELECT $TABLE_SAVEDIMAGES.$KEY_RESULTID, $TABLE_SAVEDIMAGES.$KEY_SAVEDIMAGE, $TABLE_UPLOADEDIMAGES.$KEY_UPLOADIMAGE FROM $TABLE_SAVEDIMAGES JOIN $TABLE_UPLOADEDIMAGES ON $TABLE_SAVEDIMAGES.$KEY_UPLOADID = $TABLE_UPLOADEDIMAGES.$KEY_UPLOADID WHERE $TABLE_UPLOADEDIMAGES.$KEY_UPLOADID = $id"
+            "SELECT $TABLE_SAVEDIMAGES.$KEY_RESULTID, $TABLE_SAVEDIMAGES.$KEY_SAVEDIMAGE, $TABLE_UPLOADEDIMAGES.$KEY_UPLOADIMAGE " +
+                    "FROM $TABLE_SAVEDIMAGES " +
+                    "JOIN $TABLE_UPLOADEDIMAGES ON $TABLE_SAVEDIMAGES.$KEY_UPLOADID = $TABLE_UPLOADEDIMAGES.$KEY_UPLOADID " +
+                    "WHERE $TABLE_UPLOADEDIMAGES.$KEY_UPLOADID = $id"
+
         val db = this.readableDatabase
-        val cursor: Cursor?
-        var id: Int
+        var cursor: Cursor?
+        var imageId: Int
         var image: ByteArray
 
         try {
@@ -117,21 +121,41 @@ class DatabaseHandler(context: Context) :
         }
         if (cursor.moveToFirst()) {
 //            Add the original image to the list first
-            id = cursor.getInt(cursor.getColumnIndex(KEY_RESULTID))
+            imageId = cursor.getInt(cursor.getColumnIndex(KEY_RESULTID))
             image = cursor.getBlob(cursor.getColumnIndex(KEY_UPLOADIMAGE))
-            val originalImage = DatabaseImage(id = id, image = image)
+            val originalImage = DatabaseImage(id = imageId, image = image)
             imgList.add(originalImage)
 //            Add the rest of the images
             do {
-                id = cursor.getInt(cursor.getColumnIndex(KEY_RESULTID))
+                imageId = cursor.getInt(cursor.getColumnIndex(KEY_RESULTID))
                 image = cursor.getBlob(cursor.getColumnIndex(KEY_SAVEDIMAGE))
 
-                val img = DatabaseImage(id = id, image = image)
+                val img = DatabaseImage(id = imageId, image = image)
                 imgList.add(img)
             } while (cursor.moveToNext())
         }
-        cursor.close()
 
+        if (imgList.isEmpty()) {
+            val backUpQuery = "SELECT * FROM $TABLE_UPLOADEDIMAGES WHERE $KEY_UPLOADID = $id"
+            try {
+                cursor = db.rawQuery(backUpQuery, null)
+            } catch (e: SQLiteException) {
+                db.execSQL(selectQuery)
+                return ArrayList()
+            }
+            if (cursor.moveToLast()) {
+
+                imageId = cursor.getInt(0)
+                image = cursor.getBlob(cursor.getColumnIndex(KEY_UPLOADIMAGE))
+                val img = DatabaseImage(id = imageId, image = image)
+                imgList.add(img)
+            }
+        }
+
+        cursor.close()
+        db.close()
         return imgList
     }
+
 }
+
