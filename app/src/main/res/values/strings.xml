@@ -21,4 +21,6 @@
     <string name="saved_db">Saved!</string>
     <string name="no_image">No image!</string>
     <string name="close">Close</string>
+    <string name="delete">Delete</string>
+    <string name="image_from_database">Image from database</string>
 </resources>

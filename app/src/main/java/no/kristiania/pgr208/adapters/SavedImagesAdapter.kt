@@ -33,7 +33,7 @@ class SavedImagesAdapter(private val data: List<DatabaseImage>) :
 //        Fills the cards horizontally with images from db
         holder.itemView.findViewById<RecyclerView>(R.id.horizontal_recyclerView).apply {
 //            position starts at 0 while the db starts at 1 so we use position+1 to send the correct id to db.getRelatedImages()
-            myAdapter = HorizontalResultsAdapter(db.getRelatedImages(position + 1))
+            myAdapter = HorizontalResultsAdapter(context, db.getRelatedImages(position + 1))
             layoutManager = manager
             adapter = myAdapter
 

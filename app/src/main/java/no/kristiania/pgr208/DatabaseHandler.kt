@@ -157,5 +157,10 @@ class DatabaseHandler(context: Context) :
         return imgList
     }
 
+    fun deleteImage(id: Int) : Boolean {
+        val db = this.writableDatabase
+        return db.delete(TABLE_SAVEDIMAGES, "result_id = $id", null) != 0
+    }
+
 }
 
