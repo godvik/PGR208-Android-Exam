@@ -45,6 +45,12 @@ class ReverseImageSearchActivity : AppCompatActivity() {
             }
         }
 
+        /*imageUrl?.let { it1 -> reverseImageSearch(it1, "bing") } ?: "null"*/
+
+
+        /*val image = imageUrl?: "no image"
+        reverseImageSearch(image, "bing")*/
+
         val searchTineyeBtn: Button = findViewById(R.id.searchTineye)
         searchTineyeBtn.setOnClickListener {
             if (imageUrl != null) {
