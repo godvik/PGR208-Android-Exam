@@ -96,7 +96,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun startCrop()  {
+    private fun startCrop() {
         CoroutineScope(Dispatchers.IO).launch {
             cropImage.launch(
                 options {

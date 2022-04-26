@@ -19,11 +19,9 @@ class FullScreenImageActivity : AppCompatActivity() {
 
 //        We use the same activity for 2 slightly different layouts
 //        if the image_link intent is empty, we show the layout with a delete button for saved images
-        if (imageUrl.isNullOrBlank()) {
-            setContentView(R.layout.activity_fullscreen_delete)
-        } else {
-            setContentView(R.layout.activity_fullscreen)
-        }
+//        We use the elvis operator to check if imageUrl is null
+
+        imageUrl?.let { setContentView(R.layout.activity_fullscreen) } ?: setContentView(R.layout.activity_fullscreen_delete)
 
         
 
