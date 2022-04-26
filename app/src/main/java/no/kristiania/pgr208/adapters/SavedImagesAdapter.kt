@@ -29,13 +29,13 @@ class SavedImagesAdapter(private val data: ArrayList<Int>) :
         manager =
             LinearLayoutManager(holder.itemView.context, LinearLayoutManager.HORIZONTAL, false)
 
-            //        Fills the cards horizontally with images from db
-            holder.itemView.findViewById<RecyclerView>(R.id.horizontal_recyclerView).apply {
+        //        Fills the cards horizontally with images from db
+        holder.itemView.findViewById<RecyclerView>(R.id.horizontal_recyclerView).apply {
 //            position starts at 0 while the db starts at 1 so we use position+1 to send the correct id to db.getRelatedImages()
-                myAdapter = HorizontalResultsAdapter(context, db.getRelatedImages(data[position]))
-                layoutManager = manager
-                adapter = myAdapter
-            }
+            myAdapter = HorizontalResultsAdapter(context, db.getRelatedImages(data[position]))
+            layoutManager = manager
+            adapter = myAdapter
+        }
     }
 
     override fun getItemCount(): Int {

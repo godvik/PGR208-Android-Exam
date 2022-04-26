@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import kotlinx.android.synthetic.main.fragment_delete_dialog.view.*
+import no.kristiania.pgr208.adapters.ImageAdapter
+import no.kristiania.pgr208.adapters.SavedImagesAdapter
 
 class DeleteDialogFragment() : DialogFragment() {
     private lateinit var db: DatabaseHandler
@@ -18,7 +20,6 @@ class DeleteDialogFragment() : DialogFragment() {
         db = context?.let { DatabaseHandler(it) }!!
        val rootView: View = inflater.inflate(R.layout.fragment_delete_dialog, container, false)
         val id = this.arguments?.getInt("imageId")
-        Toast.makeText(context, id.toString(), Toast.LENGTH_SHORT).show()
 
 
         rootView.cancel_button.setOnClickListener {
