@@ -20,7 +20,6 @@ class ImageAdapter(private var context: Context, private val data: List<ImageUrl
     class MyViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
         private lateinit var db: DatabaseHandler
         val viewBtn: Button = itemView.findViewById(R.id.buttonView)
-        var uploadedImageURL: String? = null
 
         fun bind(property: ImageUrls) {
             val title = view.findViewById<TextView>(R.id.tvTitle)

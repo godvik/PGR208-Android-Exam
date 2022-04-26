@@ -95,7 +95,7 @@ class ReverseImageSearchActivity : AppCompatActivity() {
                 override fun onError(error: ANError) {
                     // handle error
                     if (error.errorDetail.equals("connectionError")) {
-                        textView.text = getString(R.string.upload_img_error, endpoint)
+                        textView.text = getString(R.string.search_timeout, endpoint)
                     } else {
                         textView.text = getString(R.string.upload_img_error, error.errorDetail)
                     }

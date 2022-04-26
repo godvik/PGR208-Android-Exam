@@ -25,6 +25,8 @@ class FullScreenImageActivity : AppCompatActivity() {
             setContentView(R.layout.activity_fullscreen)
         }
 
+        
+
         val imgView = findViewById<ImageView>(R.id.iv_full)
         val btnClose = findViewById<Button>(R.id.btnClose)
         val btnDelete = findViewById<Button>(R.id.btnDelete)
