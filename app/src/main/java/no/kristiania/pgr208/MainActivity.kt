@@ -27,6 +27,7 @@ import no.kristiania.pgr208.utils.BitmapHelper.getBytes
 import com.theartofdev.edmodo.cropper.CropImage
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
+import com.theartofdev.edmodo.cropper.CropImageView
 
 import java.io.*
 import java.util.*
@@ -41,7 +42,7 @@ class MainActivity : AppCompatActivity() {
 
     private val cropActivityResultContract = object : ActivityResultContract<Any?, Uri>() {
         override fun createIntent(context: Context, input: Any?): Intent {
-            return CropImage.activity()
+            return CropImage.activity().setGuidelines(CropImageView.Guidelines.ON)
                 .setAspectRatio(16, 9)
                 .getIntent(this@MainActivity)
         }
@@ -83,7 +84,7 @@ class MainActivity : AppCompatActivity() {
 //        Launch the galleryPicker
         val selectImageBtn = findViewById<Button>(R.id.selectImageBtn)
         selectImageBtn.setOnClickListener {
-            cropActivityResultLauncher.launch("*/*")
+            cropActivityResultLauncher.launch("image/*")
         }
 
 //        Sends the uploadedImageURL to the next activity to be used for GET requests
