@@ -95,6 +95,7 @@ class MainActivity : AppCompatActivity() {
         cropImage.launch(
             options {
                 setGuidelines(CropImageView.Guidelines.ON)
+                setOutputCompressFormat(Bitmap.CompressFormat.PNG)
             }
         )
     }
