@@ -14,6 +14,8 @@
     <string name="view">View</string>
     <string name="save">Save</string>
     <string name="results_found">Found %1$d results from %2$s</string>
+    <string name="search_timeout">%1$s took to long to respond. Try another endpoint.</string>
+    <string name="search_error">Error: %1$s</string>
     <string name="similar_images">Searching for similar images on %1$s..</string>
     <string name="upload_img">Uploading image..</string>
     <string name="upload_img_success">Image uploaded successfully!</string>
