@@ -46,5 +46,5 @@ dependencies {
     implementation 'com.amitshekhar.android:android-networking:1.0.2'
     implementation 'androidx.core:core-ktx:{latestVersion}'
     implementation 'com.github.CanHub:Android-Image-Cropper:4.2.1'
-
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
 }

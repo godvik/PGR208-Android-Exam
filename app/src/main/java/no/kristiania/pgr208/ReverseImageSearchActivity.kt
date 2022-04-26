@@ -10,6 +10,9 @@ import com.androidnetworking.AndroidNetworking
 import com.androidnetworking.common.Priority
 import com.androidnetworking.error.ANError
 import com.androidnetworking.interfaces.JSONArrayRequestListener
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import no.kristiania.pgr208.Constants.baseUrl
 import no.kristiania.pgr208.adapters.ImageAdapter
 import okhttp3.OkHttpClient
@@ -69,41 +72,45 @@ class ReverseImageSearchActivity : AppCompatActivity() {
     private fun reverseImageSearch(imageUrl: String, endpoint: String) {
         val textView: TextView = findViewById(R.id.textView)
         textView.text = getString(R.string.similar_images, endpoint)
-        AndroidNetworking.get(baseUrl + endpoint)
-            .addQueryParameter("url", imageUrl)
-            .setTag("test")
-            .setPriority(Priority.LOW)
-            .build()
-            .getAsJSONArray(object : JSONArrayRequestListener {
-                override fun onResponse(response: JSONArray) {
-                    for (i in 0 until response.length()) {
-                        list.add(
-                            ImageUrls(
-                                response.getJSONObject(i).getString("thumbnail_link"),
-                                response.getJSONObject(i).getString("image_link")
+//        Move the GET operation to a coroutine on IO thread
+        CoroutineScope(Dispatchers.IO).launch {
+            AndroidNetworking.get(baseUrl + endpoint)
+                .addQueryParameter("url", imageUrl)
+                .setTag("test")
+                .setPriority(Priority.LOW)
+                .build()
+                .getAsJSONArray(object : JSONArrayRequestListener {
+                    override fun onResponse(response: JSONArray) {
+                        for (i in 0 until response.length()) {
+                            list.add(
+                                ImageUrls(
+                                    response.getJSONObject(i).getString("thumbnail_link"),
+                                    response.getJSONObject(i).getString("image_link")
+                                )
                             )
-                        )
+                        }
+                        textView.text =
+                            getString(R.string.results_found, response.length(), endpoint)
+                        recyclerView = findViewById<RecyclerView>(R.id.recycler_view).apply {
+                            myAdapter = ImageAdapter(context, list)
+                            layoutManager = manager
+                            adapter = myAdapter
+                        }
                     }
-                    textView.text = getString(R.string.results_found, response.length(), endpoint)
-                    recyclerView = findViewById<RecyclerView>(R.id.recycler_view).apply {
-                        myAdapter = ImageAdapter(context, list)
-                        layoutManager = manager
-                        adapter = myAdapter
-                    }
-                }
 
-                override fun onError(error: ANError) {
-                    // handle error
-                    if (error.errorDetail.equals("connectionError")) {
-                        textView.text = getString(R.string.search_timeout, endpoint)
-                    } else {
-                        textView.text = getString(R.string.upload_img_error, error.errorDetail)
+                    override fun onError(error: ANError) {
+                        // handle error
+                        if (error.errorDetail.equals("connectionError")) {
+                            textView.text = getString(R.string.search_timeout, endpoint)
+                        } else {
+                            textView.text = getString(R.string.upload_img_error, error.errorDetail)
+                        }
+                        println(error)
+                        println(error.errorCode)
+                        println(error.errorDetail)
                     }
-                    println(error)
-                    println(error.errorCode)
-                    println(error.errorDetail)
-                }
-            })
+                })
+        }
     }
 }
 
