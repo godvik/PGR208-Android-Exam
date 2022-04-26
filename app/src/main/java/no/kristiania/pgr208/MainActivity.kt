@@ -21,6 +21,8 @@ import no.kristiania.pgr208.utils.BitmapHelper.bitmapToFileUri
 import no.kristiania.pgr208.utils.BitmapHelper.getBytes
 import java.io.*
 import java.util.*
+import okhttp3.OkHttpClient
+import java.util.concurrent.TimeUnit
 
 
 class MainActivity : AppCompatActivity() {
@@ -35,7 +37,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         requestPermission()
-        AndroidNetworking.initialize(applicationContext)
+
+//        Set global timeout for android networking
+        val okHttpClient = OkHttpClient().newBuilder()
+            .connectTimeout(20, TimeUnit.SECONDS)
+            .readTimeout(20, TimeUnit.SECONDS)
+            .writeTimeout(20, TimeUnit.SECONDS)
+            .build()
+        AndroidNetworking.initialize(applicationContext, okHttpClient)
         AndroidNetworking.enableLogging()
         db = DatabaseHandler(this)
         imgView = findViewById(R.id.iv_userImage)

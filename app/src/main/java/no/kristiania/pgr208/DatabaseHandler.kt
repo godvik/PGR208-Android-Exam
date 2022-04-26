@@ -1,5 +1,6 @@
 package no.kristiania.pgr208
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
@@ -13,7 +14,7 @@ class DatabaseHandler(context: Context) :
 
     //    Constants for tablenames and columns. Increment DATABASE_VERSION to apply database changes
     companion object {
-        private const val DATABASE_VERSION = 7
+        private const val DATABASE_VERSION = 11
         private const val DATABASE_NAME = "ImageDatabase"
         private const val TABLE_UPLOADEDIMAGES = "UploadedImagesTable"
         private const val TABLE_SAVEDIMAGES = "SavedImagesTable"
@@ -24,11 +25,15 @@ class DatabaseHandler(context: Context) :
         private const val KEY_SAVEDIMAGE = "saved_image"
     }
 
+    override fun onConfigure(db: SQLiteDatabase) {
+        db.setForeignKeyConstraintsEnabled(true)
+    }
+
     override fun onCreate(db: SQLiteDatabase?) {
         val CREATE_UPLOADEDIMAGES_TABLE =
             ("CREATE TABLE $TABLE_UPLOADEDIMAGES($KEY_UPLOADID INTEGER PRIMARY KEY,$KEY_UPLOADIMAGE BLOB)")
         val CREATE_SAVEDIMAGES_TABLE =
-            ("CREATE TABLE $TABLE_SAVEDIMAGES($KEY_RESULTID INTEGER PRIMARY KEY, $KEY_UPLOADID references $TABLE_SAVEDIMAGES($KEY_UPLOADID),  $KEY_SAVEDIMAGE BLOB)")
+            ("CREATE TABLE $TABLE_SAVEDIMAGES($KEY_RESULTID INTEGER PRIMARY KEY, $KEY_UPLOADID INTEGER, $KEY_SAVEDIMAGE BLOB, FOREIGN KEY ($KEY_UPLOADID) references $TABLE_UPLOADEDIMAGES($KEY_UPLOADID) ON DELETE CASCADE)")
 
         db?.execSQL(CREATE_UPLOADEDIMAGES_TABLE)
         db?.execSQL(CREATE_SAVEDIMAGES_TABLE)
@@ -71,15 +76,12 @@ class DatabaseHandler(context: Context) :
         return success
     }
 
-    //    Select all uploaded images and return them in a list
-    fun viewImage(): ArrayList<DatabaseImage> {
-        val imgList: ArrayList<DatabaseImage> = ArrayList()
+    @SuppressLint("Range")
+    fun getIds() : ArrayList<Int> {
+        val idList: ArrayList<Int> = ArrayList()
         val selectQuery = "SELECT * FROM $TABLE_UPLOADEDIMAGES"
         val db = this.readableDatabase
         val cursor: Cursor?
-        var id: Int
-        var image: ByteArray
-
         try {
             cursor = db.rawQuery(selectQuery, null)
         } catch (e: SQLiteException) {
@@ -88,22 +90,20 @@ class DatabaseHandler(context: Context) :
         }
         if (cursor.moveToFirst()) {
             do {
-                id = cursor.getInt(cursor.getColumnIndex(KEY_UPLOADID))
-                image = cursor.getBlob(cursor.getColumnIndex(KEY_UPLOADIMAGE))
+                idList.add(cursor.getInt(cursor.getColumnIndex(KEY_UPLOADID)))
 
-                val img = DatabaseImage(id = id, image = image)
-                imgList.add(img)
             } while (cursor.moveToNext())
         }
         cursor.close()
-        return imgList
+        return idList
     }
 
     //    Select all the images related to the ID of the original image. Add them and the original image to a list and return it
+    @SuppressLint("Range")
     fun getRelatedImages(id: Int): ArrayList<DatabaseImage> {
         val imgList: ArrayList<DatabaseImage> = ArrayList()
         val selectQuery =
-            "SELECT $TABLE_SAVEDIMAGES.$KEY_RESULTID, $TABLE_SAVEDIMAGES.$KEY_SAVEDIMAGE, $TABLE_UPLOADEDIMAGES.$KEY_UPLOADIMAGE " +
+            "SELECT $TABLE_SAVEDIMAGES.$KEY_RESULTID, $TABLE_SAVEDIMAGES.$KEY_SAVEDIMAGE, $TABLE_UPLOADEDIMAGES.$KEY_UPLOADIMAGE, $TABLE_UPLOADEDIMAGES.$KEY_UPLOADID " +
                     "FROM $TABLE_SAVEDIMAGES " +
                     "JOIN $TABLE_UPLOADEDIMAGES ON $TABLE_SAVEDIMAGES.$KEY_UPLOADID = $TABLE_UPLOADEDIMAGES.$KEY_UPLOADID " +
                     "WHERE $TABLE_UPLOADEDIMAGES.$KEY_UPLOADID = $id"
@@ -121,7 +121,7 @@ class DatabaseHandler(context: Context) :
         }
         if (cursor.moveToFirst()) {
 //            Add the original image to the list first
-            imageId = cursor.getInt(cursor.getColumnIndex(KEY_RESULTID))
+            imageId = cursor.getInt(cursor.getColumnIndex(KEY_UPLOADID))
             image = cursor.getBlob(cursor.getColumnIndex(KEY_UPLOADIMAGE))
             val originalImage = DatabaseImage(id = imageId, image = image)
             imgList.add(originalImage)
@@ -155,6 +155,16 @@ class DatabaseHandler(context: Context) :
         cursor.close()
         db.close()
         return imgList
+    }
+
+    fun deleteImage(id: Int): Boolean {
+        val db = this.writableDatabase
+        return db.delete(TABLE_SAVEDIMAGES, "$KEY_RESULTID = $id", null) != 0
+    }
+
+    fun deleteUploadedImage(id: Int): Boolean {
+        val db = this.writableDatabase
+        return db.delete(TABLE_UPLOADEDIMAGES, "$KEY_UPLOADID = $id", null) != 0
     }
 
 }

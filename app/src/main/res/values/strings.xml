@@ -14,6 +14,8 @@
     <string name="view">View</string>
     <string name="save">Save</string>
     <string name="results_found">Found %1$d results from %2$s</string>
+    <string name="search_timeout">%1$s took to long to respond. Try another endpoint.</string>
+    <string name="search_error">Error: %1$s</string>
     <string name="similar_images">Searching for similar images on %1$s..</string>
     <string name="upload_img">Uploading image..</string>
     <string name="upload_img_success">Image uploaded successfully!</string>
@@ -21,4 +23,8 @@
     <string name="saved_db">Saved!</string>
     <string name="no_image">No image!</string>
     <string name="close">Close</string>
+    <string name="delete">Delete</string>
+    <string name="image_from_database">Image from database</string>
+    <string name="delete_dialog">Are you sure you want to delete this image? If you delete the original image, all related images will also be deleted!</string>
+    <string name="cancel">Cancel</string>
 </resources>

@@ -12,7 +12,9 @@ import com.androidnetworking.error.ANError
 import com.androidnetworking.interfaces.JSONArrayRequestListener
 import no.kristiania.pgr208.Constants.baseUrl
 import no.kristiania.pgr208.adapters.ImageAdapter
+import okhttp3.OkHttpClient
 import org.json.JSONArray
+import java.util.concurrent.TimeUnit
 
 
 class ReverseImageSearchActivity : AppCompatActivity() {
@@ -84,7 +86,7 @@ class ReverseImageSearchActivity : AppCompatActivity() {
                     }
                     textView.text = getString(R.string.results_found, response.length(), endpoint)
                     recyclerView = findViewById<RecyclerView>(R.id.recycler_view).apply {
-                        myAdapter = ImageAdapter(context,list)
+                        myAdapter = ImageAdapter(context, list)
                         layoutManager = manager
                         adapter = myAdapter
                     }
@@ -92,6 +94,11 @@ class ReverseImageSearchActivity : AppCompatActivity() {
 
                 override fun onError(error: ANError) {
                     // handle error
+                    if (error.errorDetail.equals("connectionError")) {
+                        textView.text = getString(R.string.upload_img_error, endpoint)
+                    } else {
+                        textView.text = getString(R.string.upload_img_error, error.errorDetail)
+                    }
                     println(error)
                     println(error.errorCode)
                     println(error.errorDetail)
