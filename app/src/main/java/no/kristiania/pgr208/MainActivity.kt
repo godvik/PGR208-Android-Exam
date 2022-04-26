@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
@@ -39,20 +40,8 @@ class MainActivity : AppCompatActivity() {
     var uploadedImageURL: String? = null
     private var bitmap: Bitmap? = null
     private lateinit var db: DatabaseHandler
+    private lateinit var selectImage: Uri
 
-    private val cropActivityResultContract = object : ActivityResultContract<Any?, Uri>() {
-        override fun createIntent(context: Context, input: Any?): Intent {
-            return CropImage.activity().setGuidelines(CropImageView.Guidelines.ON)
-                .setAspectRatio(16, 9)
-                .getIntent(this@MainActivity)
-        }
-
-        override fun parseResult(resultCode: Int, intent: Intent?): Uri {
-            return CropImage.getActivityResult(intent)?.uri!!
-        }
-    }
-
-    private lateinit var cropActivityResultLauncher: ActivityResultLauncher<Any?>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,30 +50,27 @@ class MainActivity : AppCompatActivity() {
         AndroidNetworking.initialize(applicationContext)
         AndroidNetworking.enableLogging()
         db = DatabaseHandler(this)
-        val imgView = findViewById<ImageView>(R.id.iv_userImage)
 
-        cropActivityResultLauncher = registerForActivityResult(cropActivityResultContract) {
-            it?.let { uri ->
-                imgView.setImageURI(uri)
-            }
-        }
 
 
 //        Select image from gallery, convert it to bitmap and set the imageView to the bitmap
 //        Also takes the bitmap and gets the URI path to create a PNG file for upload
-        val galleryLauncher =
+/*        val galleryLauncher =
             registerForActivityResult(ActivityResultContracts.GetContent()) { data ->
                 val inputStream = contentResolver.openInputStream(data)
                 bitmap = BitmapFactory.decodeStream(inputStream)
                 imgView.setImageBitmap(bitmap)
                 val imagePath = bitmapToFileUri(bitmap!!, this)
                 imageFile = File(imagePath.toString())
-            }
+            }*/
 
 //        Launch the galleryPicker
         val selectImageBtn = findViewById<Button>(R.id.selectImageBtn)
         selectImageBtn.setOnClickListener {
-            cropActivityResultLauncher.launch("image/*")
+            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            intent.type = "image/*"
+            intent.putExtra("crop", true)
+            cropActivityResultLauncher.launch(intent)
         }
 
 //        Sends the uploadedImageURL to the next activity to be used for GET requests
@@ -109,6 +95,39 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+
+    private fun cropImage(uri: Uri) {
+        CropImage.activity(uri).setGuidelines(CropImageView.Guidelines.ON)
+            .setAspectRatio(1920, 1080)
+            .setCropShape(CropImageView.CropShape.RECTANGLE)
+            .start(this)
+    }
+
+    private val cropActivityResultLauncher: ActivityResultLauncher<Intent> =
+
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            val ivCroppedImage: ImageView = findViewById(R.id.iv_userImage)
+            when (it.resultCode) {
+                RESULT_OK -> {
+                    it.data?.data?.let { uri ->
+                        cropImage(uri)
+                    }
+                    selectImage = it.data?.data!!
+                    ivCroppedImage.setImageURI(selectImage)
+                }
+                CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE -> {
+                    val result = CropImage.getActivityResult(it.data)
+                    if (it.resultCode == Activity.RESULT_OK) {
+                        result.uri?.let {
+                            ivCroppedImage.setImageURI(result.uri)
+                            selectImage = result.uri
+                        }
+                    } else if (it.resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                        Toast.makeText(this, result.error.message, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
 
     //    Uploads the previously created imageFile. On success it also saves the imageFile to the database as a BLOB
     private fun uploadImage() {
