@@ -15,9 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import no.kristiania.pgr208.Constants.baseUrl
 import no.kristiania.pgr208.adapters.ImageAdapter
-import okhttp3.OkHttpClient
 import org.json.JSONArray
-import java.util.concurrent.TimeUnit
 
 
 class ReverseImageSearchActivity : AppCompatActivity() {
@@ -31,7 +29,6 @@ class ReverseImageSearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reverse_image_search)
-
 
 //        Get the imageURL intent from the previous activity and send it along with endpoints to GET requests as long as its not null
         val imageUrl = intent.getStringExtra("Image_URL")
@@ -50,21 +47,12 @@ class ReverseImageSearchActivity : AppCompatActivity() {
             }
         }
 
-        /*imageUrl?.let { it1 -> reverseImageSearch(it1, "bing") } ?: "null"*/
-
-
-        /*val image = imageUrl?: "no image"
-        reverseImageSearch(image, "bing")*/
-
         val searchTineyeBtn: Button = findViewById(R.id.searchTineye)
         searchTineyeBtn.setOnClickListener {
             if (imageUrl != null) {
                 reverseImageSearch(imageUrl, "tineye")
             }
         }
-
-        manager = LinearLayoutManager(this)
-
     }
 
     // Search for similar images and add the image_link and thumbnail_links to an Object ImageProperty and add to a list
@@ -91,6 +79,7 @@ class ReverseImageSearchActivity : AppCompatActivity() {
                         }
                         textView.text =
                             getString(R.string.results_found, response.length(), endpoint)
+                        manager = LinearLayoutManager(this@ReverseImageSearchActivity)
                         recyclerView = findViewById<RecyclerView>(R.id.recycler_view).apply {
                             myAdapter = ImageAdapter(context, list)
                             layoutManager = manager

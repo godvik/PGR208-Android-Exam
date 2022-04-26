@@ -35,9 +35,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var imgView: ImageView
     private lateinit var tvProgress: TextView
     private lateinit var searchImages: Button
-    private var imageFile: File? = null
-    var uploadedImageURL: String? = null
-    private var bitmap: Bitmap? = null
+    private lateinit var imageFile: File
+    private lateinit var uploadedImageURL: String
+    private lateinit var bitmap: Bitmap
     private lateinit var db: DatabaseHandler
 
 
@@ -110,9 +110,9 @@ class MainActivity : AppCompatActivity() {
     private val cropImage = registerForActivityResult(CropImageContract()) { result ->
         if (result.isSuccessful) {
             val inputStream = result.uriContent?.let { contentResolver.openInputStream(it) }
-            bitmap = BitmapFactory.decodeStream(inputStream)
+            bitmap = (BitmapFactory.decodeStream(inputStream) ?: null) as Bitmap
             imgView.setImageBitmap(bitmap)
-            val imagePath = bitmapToFileUri(bitmap!!, this)
+            val imagePath = bitmapToFileUri(bitmap, this)
             imageFile = File(imagePath.toString())
             uploadBtn.visibility = View.VISIBLE
         } else {
@@ -136,7 +136,7 @@ class MainActivity : AppCompatActivity() {
                 .getAsString(object : StringRequestListener {
                     override fun onResponse(response: String) {
                         uploadedImageURL = response
-                        db.addUploadedImage(DatabaseImage(0, getBytes(bitmap!!)))
+                        db.addUploadedImage(DatabaseImage(0, getBytes(bitmap)))
                         tvProgress.text = getString(R.string.upload_img_success)
                         searchImages.visibility = View.VISIBLE
                     }
