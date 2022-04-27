@@ -46,6 +46,8 @@ class DatabaseHandler(context: Context) :
         onCreate(db)
     }
 
+
+    //    Insert the image that the user uploaded to the server
     fun addUploadedImage(img: DatabaseImage): Long {
         val db = this.writableDatabase
         val contentValues = ContentValues()
@@ -56,15 +58,17 @@ class DatabaseHandler(context: Context) :
         return success
     }
 
+
+    //    Insert the images the user wants to save and create a connection to the uploaded image
     fun addSavedImage(img: DatabaseImage): Long {
         val db = this.writableDatabase
         val contentValues = ContentValues()
 
-//        Get the ID of the latest uploaded image and insert it into db to create relation between saved images and uploaded images
+//        Get the upload_id of the latest uploaded image and insert it into db to create relation between saved images and uploaded images
         var id: Int? = null
         val cursor: Cursor = db.rawQuery("SELECT  * FROM $TABLE_UPLOADEDIMAGES", null)
         if (cursor.moveToLast()) {
-//            Set the cursor to the first column (id column) and to the last entry
+//            Set the cursor to the first column (upload_id) and to the last entry
             id = cursor.getInt(0)
         }
         cursor.close()
@@ -77,6 +81,8 @@ class DatabaseHandler(context: Context) :
         return success
     }
 
+
+    //    Get the upload_id of all the uploaded images
     @SuppressLint("Range")
     fun getIds(): ArrayList<Int> {
         val idList: ArrayList<Int> = ArrayList()
@@ -100,7 +106,7 @@ class DatabaseHandler(context: Context) :
         return idList
     }
 
-    //    Select all the images related to the ID of the original image. Add them and the original image to a list and return it
+    //    Select all the images related to the upload_id of the original image. Add them and the original image to a list and return it
     @SuppressLint("Range")
     fun getRelatedImages(id: Int): ArrayList<DatabaseImage> {
 
@@ -141,6 +147,9 @@ class DatabaseHandler(context: Context) :
             } while (cursor.moveToNext())
         }
 
+
+//        If no images are saved to the original image, the above JOIN query will fail. Therefore we use this to return only the uploaded image
+//        This is because the user can still go back and search and add new images
         if (imgList.isEmpty()) {
             val backUpQuery = "SELECT * FROM $TABLE_UPLOADEDIMAGES WHERE $KEY_UPLOADID = $id"
             try {
@@ -163,6 +172,8 @@ class DatabaseHandler(context: Context) :
         return imgList
     }
 
+
+    //    Delete one of the downloaded images. Uses a callback to ensure the operation is completed before the recyclerview updates so that it has the latest data
     fun deleteImage(id: Int, myCallback: () -> Unit): Boolean {
         val db = this.writableDatabase
         val response = db.delete(TABLE_SAVEDIMAGES, "$KEY_RESULTID = $id", null) != 0
@@ -171,6 +182,8 @@ class DatabaseHandler(context: Context) :
         return response
     }
 
+    //    Delete one of the uploaded images. Uses a callback to ensure the operation is completed before the recyclerview updates so that it has the latest data
+//    Deleting one of these images will also cascade delete all related images.
     fun deleteUploadedImage(id: Int, myCallback: () -> Unit): Boolean {
         val db = this.writableDatabase
         val response = db.delete(TABLE_UPLOADEDIMAGES, "$KEY_UPLOADID = $id", null) != 0

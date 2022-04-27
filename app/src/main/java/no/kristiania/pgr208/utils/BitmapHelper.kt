@@ -20,6 +20,8 @@ object BitmapHelper {
         return BitmapFactory.decodeStream(stream)
     }
 
+
+    //    We got this function from some stackoverflow post
     fun bitmapToFileUri(bitmap: Bitmap, context: Context): Uri {
         // Get the context wrapper
         val wrapper = ContextWrapper(context)

@@ -17,7 +17,8 @@ class DeleteDialogFragment() : DialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         db = context?.let { DatabaseHandler(it) }!!
-       val rootView: View = inflater.inflate(R.layout.fragment_delete_dialog, container, false)
+        val rootView: View = inflater.inflate(R.layout.fragment_delete_dialog, container, false)
+//        Get parcelables
         val id = this.arguments?.getInt("imageId")
         val column = this.arguments?.getString("columnName")
 
@@ -27,9 +28,9 @@ class DeleteDialogFragment() : DialogFragment() {
         }
 
         rootView.delete_button.setOnClickListener {
-//        Delete image from saved images table. If the function returns false, we know that it is the original image
-//        and can instead query to delete it from the other table
-            if (column.equals("result_id")){
+// Delete image. If the user attempts to delete "the original image" aka the uploaded image, the database will cascade delete all the related images
+//            Check to see which table the requested image should be deleted from
+            if (column.equals("result_id")) {
                 db.deleteImage(id!!) { activity?.finish() }
             } else {
                 db.deleteUploadedImage(id!!) { activity?.finish() }

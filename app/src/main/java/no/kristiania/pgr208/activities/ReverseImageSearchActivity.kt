@@ -25,6 +25,8 @@ class ReverseImageSearchActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var manager: RecyclerView.LayoutManager
     private lateinit var myAdapter: RecyclerView.Adapter<*>
+
+    //    Create an ArrayList of type ImageUrls which is a dataclass we created to store thumbnail and image links
     val list = ArrayList<ImageUrls>()
 
 
@@ -32,7 +34,7 @@ class ReverseImageSearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reverse_image_search)
 
-//        Get the imageURL intent from the previous activity and send it along with endpoints to GET requests as long as its not null
+//        Get the imageURL parcelable from the previous activity and send it along with endpoints to GET requests as long as its not null
         val imageUrl = intent.getStringExtra("Image_URL")
 
         val searchGoogleBtn: Button = findViewById(R.id.searchGoogle)
@@ -57,8 +59,8 @@ class ReverseImageSearchActivity : AppCompatActivity() {
         }
     }
 
-    // Search for similar images and add the image_link and thumbnail_links to an Object ImageProperty and add to a list
-//  Use the list to inflate a recyclerview with images based of the thumbnail_link
+    // Search for similar images and add the image_link and thumbnail_links to our ArrayList
+
     private fun reverseImageSearch(imageUrl: String, endpoint: String) {
         val textView: TextView = findViewById(R.id.textView)
         textView.text = getString(R.string.similar_images, endpoint)
@@ -74,6 +76,7 @@ class ReverseImageSearchActivity : AppCompatActivity() {
                         for (i in 0 until response.length()) {
                             list.add(
                                 ImageUrls(
+//                                    Get only the parts of the response we care about
                                     response.getJSONObject(i).getString("thumbnail_link"),
                                     response.getJSONObject(i).getString("image_link")
                                 )
@@ -81,6 +84,7 @@ class ReverseImageSearchActivity : AppCompatActivity() {
                         }
                         textView.text =
                             getString(R.string.results_found, response.length(), endpoint)
+                        //  Use the list to inflate a recyclerview with images based of the thumbnail_link
                         manager = LinearLayoutManager(this@ReverseImageSearchActivity)
                         recyclerView = findViewById<RecyclerView>(R.id.recycler_view).apply {
                             myAdapter = ImageAdapter(context, list)
@@ -90,7 +94,7 @@ class ReverseImageSearchActivity : AppCompatActivity() {
                     }
 
                     override fun onError(error: ANError) {
-                        // handle error
+                        // Give the user some feedback if error
                         if (error.errorDetail.equals("connectionError")) {
                             textView.text = getString(R.string.search_timeout, endpoint)
                         } else {

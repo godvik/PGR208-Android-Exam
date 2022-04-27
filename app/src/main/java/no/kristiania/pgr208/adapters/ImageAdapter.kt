@@ -33,6 +33,8 @@ class ImageAdapter(private var context: Context, private val data: List<ImageUrl
             db = DatabaseHandler(view.context)
 
 //            Get bitmap from the imageView and add to db
+//            Sometimes glide would give an SSLHandshake error and display the image in the imageview
+//            We believe this was an issue with the exam server and added a null check
             saveBtn.setOnClickListener {
                 if (imageView.drawable != null) {
                     val drawable = imageView.drawable
@@ -44,24 +46,28 @@ class ImageAdapter(private var context: Context, private val data: List<ImageUrl
                 }
             }
 
-            Glide.with(view.context).load(property.image).error(R.drawable.broken).centerCrop().into(imageView)
+//            Use glide to load image into imageview
+            Glide.with(view.context).load(property.image).error(R.drawable.broken).centerCrop()
+                .into(imageView)
         }
     }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val v = LayoutInflater.from(parent.context).inflate(R.layout.list_searchresult_images, parent, false)
+        val v = LayoutInflater.from(parent.context)
+            .inflate(R.layout.list_searchresult_images, parent, false)
         return MyViewHolder(v)
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val buttonView = holder.viewBtn
+//        Save the data to be sent as parcelable
         val imageUrl = data[position].image
 
         buttonView.setOnClickListener {
             run {
                 val intent = Intent(context, FullScreenImageActivity::class.java)
-                intent.putExtra("image_link", imageUrl )
+                intent.putExtra("image_link", imageUrl)
                 context.startActivity(intent)
             }
         }

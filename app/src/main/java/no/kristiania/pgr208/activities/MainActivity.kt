@@ -50,6 +50,8 @@ class MainActivity : AppCompatActivity() {
         requestPermission()
 
 //        Set global timeout for android networking
+//        We found that the server usually responds within 20 seconds so to avoid having to wait longer
+//        for the server to timeout the request if there is no response we set a hard limit at 20sec
         val okHttpClient = OkHttpClient().newBuilder()
             .connectTimeout(20, TimeUnit.SECONDS)
             .readTimeout(20, TimeUnit.SECONDS)
@@ -95,12 +97,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    //    Reset the textview if the user comes back to the activity
     override fun onStart() {
         super.onStart()
         tvProgress.text = ""
 
     }
 
+    //    Start the cropping activity in a new coroutine in the IO thread to lighten load on the main thread
+//    Also compresses the image in a png format
     private fun startCrop() {
         CoroutineScope(Dispatchers.IO).launch {
             cropImage.launch(
@@ -112,6 +117,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    //    Get the result from the crop activity in a lambda function. We take the URI result and convert it to a bitmap
+//    and display that bitmap in an imageview. We then use the bitmap to create a file we can use when POSTing to server
     private val cropImage = registerForActivityResult(CropImageContract()) { result ->
         if (result.isSuccessful) {
             val inputStream = result.uriContent?.let { contentResolver.openInputStream(it) }
@@ -139,12 +146,15 @@ class MainActivity : AppCompatActivity() {
                 .build()
                 .getAsString(object : StringRequestListener {
                     override fun onResponse(response: String) {
+//                        Save the response url to be sent as parcelable to next activity, save the uploaded image to the db
+//                        and give the user feedback
                         uploadedImageURL = response
-                        db.addUploadedImage(DatabaseImage(0, getBytes(bitmap),""))
+                        db.addUploadedImage(DatabaseImage(0, getBytes(bitmap), ""))
                         tvProgress.text = getString(R.string.upload_img_success)
                     }
 
                     override fun onError(anError: ANError) {
+//                        Give the user some feedback that an error occurred
                         if (anError.errorCode == 413) {
                             tvProgress.text = getString(R.string.error_413)
                         } else {

@@ -14,12 +14,16 @@ import no.kristiania.pgr208.activities.FullScreenImageActivity
 import no.kristiania.pgr208.R
 import no.kristiania.pgr208.utils.BitmapHelper
 
-class HorizontalResultsAdapter(private var context: Context, private val data: List<DatabaseImage>) :
+class HorizontalResultsAdapter(
+    private var context: Context,
+    private val data: List<DatabaseImage>
+) :
     RecyclerView.Adapter<HorizontalResultsAdapter.MyViewHolder>() {
     class MyViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
         val viewBtn: Button = itemView.findViewById(R.id.buttonView)
         fun bind(property: DatabaseImage) {
             val imageView = view.findViewById<ImageView>(R.id.iv_db_image)
+//            Using glide we take the blob from the database and convert to bitmap and display in an imageview
             Glide.with(view.context).asBitmap().load(BitmapHelper.getBitmap(property.image))
                 .centerCrop().into(imageView)
         }
@@ -33,12 +37,13 @@ class HorizontalResultsAdapter(private var context: Context, private val data: L
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val viewButton = holder.viewBtn
+//        Save incoming data in variables to be sent as parcelables to the Fullscreen Activity
         val imageBlob = data[position].image
         val imageId = data[position].id
         val columnName = data[position].column
         viewButton.setOnClickListener {
             val intent = Intent(context, FullScreenImageActivity::class.java)
-            intent.putExtra("imageBlob", imageBlob )
+            intent.putExtra("imageBlob", imageBlob)
             intent.putExtra("imageId", imageId)
             intent.putExtra("columnName", columnName)
             context.startActivity(intent)

@@ -16,23 +16,24 @@ class FullScreenImageActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         db = DatabaseHandler(this)
+
+//        Get the parcelables
         val imageUrl = intent.getStringExtra("image_link")
         val imageBlob = intent.getByteArrayExtra("imageBlob")
         val imageId = intent.getIntExtra("imageId", -1)
         val columnName = intent.getStringExtra("columnName")
 
 //        We use the same activity for 2 slightly different layouts
-//        if the image_link intent is empty, we show the layout with a delete button for saved images
-//        We use the elvis operator to check if imageUrl is null
+//        if the image_link intent is null, we show the layout with a delete button for saved images
+//        We use the elvis operator to determine which layout should be shown by checking if imageUrl is null
 
-        imageUrl?.let { setContentView(R.layout.activity_fullscreen) } ?: setContentView(R.layout.activity_fullscreen_delete)
+        imageUrl?.let { setContentView(R.layout.activity_fullscreen) }
+            ?: setContentView(R.layout.activity_fullscreen_delete)
 
-        
 
         val imgView = findViewById<ImageView>(R.id.iv_full)
         val btnClose = findViewById<Button>(R.id.btnClose)
         val btnDelete = findViewById<Button>(R.id.btnDelete)
-
 
 
 //        Pass the imageId to a confirm deletion dialog fragment
@@ -43,7 +44,7 @@ class FullScreenImageActivity : AppCompatActivity() {
             val dialog = DeleteDialogFragment()
             dialog.arguments = bundle
             dialog.show(supportFragmentManager, "deleteDialog")
-            }
+        }
 
 
         btnClose.setOnClickListener {

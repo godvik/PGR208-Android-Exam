@@ -26,9 +26,11 @@ class DatabaseImagesActivity : AppCompatActivity() {
         textView = findViewById(R.id.textView)
 
     }
+
     //        Create X amount of cards based on the amount of results from db.getIds()
     override fun onStart() {
         super.onStart()
+//        Give the user some feedback if the database is empty
         if (db.getIds().size == 0) {
             textView.text = getString(R.string.empty_db)
         } else {
