@@ -16,6 +16,7 @@
         <Button
             android:id="@+id/selectImageBtn"
             android:text="@string/select_image"
+            android:drawableLeft="@drawable/ic_baseline_add_a_photo_24"
             android:layout_width="match_parent"
             android:layout_height="75dp"
             android:layout_weight="1"
@@ -29,6 +30,7 @@
         <Button
             android:id="@+id/searchResultsBtn"
             android:text="@string/search_results"
+            android:drawableLeft="@drawable/ic_baseline_image_search_24"
             android:layout_width="match_parent"
             android:layout_height="75dp"
             android:layout_weight="1"
@@ -42,6 +44,7 @@
         <Button
             android:id="@+id/savedResultsBtn"
             android:text="@string/saved_results"
+            android:drawableLeft="@drawable/ic_baseline_save_24"
             android:layout_width="match_parent"
             android:layout_height="75dp"
             android:layout_weight="1"
