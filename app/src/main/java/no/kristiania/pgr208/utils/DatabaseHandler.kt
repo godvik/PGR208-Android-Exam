@@ -160,14 +160,18 @@ class DatabaseHandler(context: Context) :
         return imgList
     }
 
-    fun deleteImage(id: Int): Boolean {
+    fun deleteImage(id: Int, myCallback: () -> Unit): Boolean {
         val db = this.writableDatabase
-        return db.delete(TABLE_SAVEDIMAGES, "$KEY_RESULTID = $id", null) != 0
+        val response = db.delete(TABLE_SAVEDIMAGES, "$KEY_RESULTID = $id", null) != 0
+        myCallback.invoke()
+        return response
     }
 
-    fun deleteUploadedImage(id: Int): Boolean {
+    fun deleteUploadedImage(id: Int, myCallback: () -> Unit): Boolean {
         val db = this.writableDatabase
-        return db.delete(TABLE_UPLOADEDIMAGES, "$KEY_UPLOADID = $id", null) != 0
+        val response = db.delete(TABLE_UPLOADEDIMAGES, "$KEY_UPLOADID = $id", null) != 0
+        myCallback.invoke()
+        return response
     }
 
 }

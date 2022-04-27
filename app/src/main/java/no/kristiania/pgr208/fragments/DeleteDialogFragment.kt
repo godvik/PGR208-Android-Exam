@@ -28,12 +28,10 @@ class DeleteDialogFragment() : DialogFragment() {
         rootView.delete_button.setOnClickListener {
 //        Delete image from saved images table. If the function returns false, we know that it is the original image
 //        and can instead query to delete it from the other table
-            if (!db.deleteImage(id!!)) {
-                db.deleteUploadedImage(id)
+            if (!db.deleteImage(id!!) { activity?.finish() }) {
+                db.deleteUploadedImage(id) { activity?.finish() }
             }
             dismiss()
-//            Finish the fullscreen activity
-            activity?.finish()
         }
 
 
