@@ -29,4 +29,5 @@
     <string name="cancel">Cancel</string>
     <string name="upload_img_first">You must upload an image first!</string>
     <string name="error_413">Imagefile is too large!</string>
+    <string name="empty_db">No images in database!</string>
 </resources>
