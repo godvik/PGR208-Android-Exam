@@ -19,6 +19,9 @@ import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageView
 import com.canhub.cropper.options
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import no.kristiania.pgr208.Constants.baseUrl
 import no.kristiania.pgr208.utils.BitmapHelper.bitmapToFileUri
 import no.kristiania.pgr208.utils.BitmapHelper.getBytes
@@ -31,9 +34,10 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var imgView: ImageView
     private lateinit var tvProgress: TextView
-    private var imageFile: File? = null
-    var uploadedImageURL: String? = null
-    private var bitmap: Bitmap? = null
+    private lateinit var searchImages: Button
+    private lateinit var imageFile: File
+    private lateinit var uploadedImageURL: String
+    private lateinit var bitmap: Bitmap
     private lateinit var db: DatabaseHandler
 
 
@@ -53,15 +57,16 @@ class MainActivity : AppCompatActivity() {
         db = DatabaseHandler(this)
         imgView = findViewById(R.id.iv_userImage)
         tvProgress = findViewById(R.id.tv_progress)
+        searchImages = findViewById(R.id.searchResultsBtn)
 
 
 //        Sends the uploadedImageURL to the next activity to be used for GET requests
-        val searchImages: Button = findViewById(R.id.searchResultsBtn)
+
+        searchImages.visibility = View.INVISIBLE
         searchImages.setOnClickListener {
             val i = Intent(this, ReverseImageSearchActivity::class.java)
             i.putExtra("Image_URL", uploadedImageURL)
             startActivity(i)
-
         }
 
 //        Upload image to server and save it to local db
@@ -92,20 +97,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startCrop() {
-        cropImage.launch(
-            options {
-                setGuidelines(CropImageView.Guidelines.ON)
-                setOutputCompressFormat(Bitmap.CompressFormat.PNG)
-            }
-        )
+        CoroutineScope(Dispatchers.IO).launch {
+            cropImage.launch(
+                options {
+                    setGuidelines(CropImageView.Guidelines.ON)
+                    setOutputCompressFormat(Bitmap.CompressFormat.PNG)
+                }
+            )
+        }
     }
 
     private val cropImage = registerForActivityResult(CropImageContract()) { result ->
         if (result.isSuccessful) {
             val inputStream = result.uriContent?.let { contentResolver.openInputStream(it) }
-            bitmap = BitmapFactory.decodeStream(inputStream)
+            bitmap = (BitmapFactory.decodeStream(inputStream) ?: null) as Bitmap
             imgView.setImageBitmap(bitmap)
-            val imagePath = bitmapToFileUri(bitmap!!, this)
+            val imagePath = bitmapToFileUri(bitmap, this)
             imageFile = File(imagePath.toString())
             uploadBtn.visibility = View.VISIBLE
         } else {
@@ -117,27 +124,32 @@ class MainActivity : AppCompatActivity() {
     //    Uploads the previously created imageFile. On success it also saves the imageFile to the database as a BLOB
     private fun uploadImage() {
         tvProgress.text = getString(R.string.upload_img)
-        AndroidNetworking.upload(baseUrl + "upload")
-            .addHeaders("Content-Disposition:", "form-data")
-            .addHeaders("Content-Type:", "image/png")
-            .addMultipartFile("image", imageFile)
-            .setPriority(Priority.HIGH)
-            .build()
-            .getAsString(object : StringRequestListener {
-                override fun onResponse(response: String) {
-                    uploadedImageURL = response
-                    db.addUploadedImage(DatabaseImage(0, getBytes(bitmap!!)))
-                    tvProgress.text = getString(R.string.upload_img_success)
-                }
 
-                override fun onError(anError: ANError) {
-                    println(anError.errorCode)
-                    println(anError.message)
-                    println(anError.errorDetail)
-                    println(anError.errorBody)
-                    tvProgress.text = getString(R.string.upload_img_error, anError.errorDetail)
-                }
-            })
+//        Move the POST operation to a coroutine on IO thread
+        CoroutineScope(Dispatchers.IO).launch {
+            AndroidNetworking.upload(baseUrl + "upload")
+                .addHeaders("Content-Disposition:", "form-data")
+                .addHeaders("Content-Type:", "image/png")
+                .addMultipartFile("image", imageFile)
+                .setPriority(Priority.HIGH)
+                .build()
+                .getAsString(object : StringRequestListener {
+                    override fun onResponse(response: String) {
+                        uploadedImageURL = response
+                        db.addUploadedImage(DatabaseImage(0, getBytes(bitmap)))
+                        tvProgress.text = getString(R.string.upload_img_success)
+                        searchImages.visibility = View.VISIBLE
+                    }
+
+                    override fun onError(anError: ANError) {
+                        println(anError.errorCode)
+                        println(anError.message)
+                        println(anError.errorDetail)
+                        println(anError.errorBody)
+                        tvProgress.text = getString(R.string.upload_img_error, anError.errorDetail)
+                    }
+                })
+        }
     }
 
     //    Check is the user has granted the app proper file permissions. If not, it requests it. Gets called in onCreate

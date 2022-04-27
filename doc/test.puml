@@ -1,0 +1,46 @@
+@startuml
+
+
+participant MainActivity
+participant ReverseImageSearchActivity
+participant FullscreenImageActivity
+participant DatabaseImagesActivity
+participant DeleteDialogFragment
+database ImageDatabase
+
+MainActivity -> MainActivity: Select and crop image
+MainActivity -> MainActivity: POST image to /upload
+MainActivity -> ReverseImageSearchActivity: /upload response
+MainActivity -> ImageDatabase: Save uploaded image
+ImageDatabase -> ImageDatabase: Save Image
+ReverseImageSearchActivity -> ReverseImageSearchActivity: GET /google
+ReverseImageSearchActivity -> ReverseImageSearchActivity: GET /bing
+ReverseImageSearchActivity -> ReverseImageSearchActivity: GET /tineye
+note over ReverseImageSearchActivity
+Display results in recyclerview
+end note
+ReverseImageSearchActivity -> FullscreenImageActivity: View Button
+ReverseImageSearchActivity <- FullscreenImageActivity: Close Button
+ReverseImageSearchActivity -> ImageDatabase: Save Button
+ImageDatabase -> ImageDatabase: Save Image
+MainActivity -> DatabaseImagesActivity: Display images
+DatabaseImagesActivity -> ImageDatabase: getRelatedImages()
+DatabaseImagesActivity <- ImageDatabase: ArrayList<DatabaseImage>
+note over DatabaseImagesActivity
+Display results in nested recyclerview
+end note
+DatabaseImagesActivity -> FullscreenImageActivity: View Button
+FullscreenImageActivity -> DeleteDialogFragment: Delete Button
+note over DeleteDialogFragment
+Confirm delete popup
+end note
+DeleteDialogFragment -> FullscreenImageActivity: Cancel Button
+DeleteDialogFragment -> ImageDatabase: Confirm delete
+ImageDatabase -> ImageDatabase: Delete Image
+DeleteDialogFragment -> DatabaseImagesActivity: Close Dialog
+DatabaseImagesActivity <- ImageDatabase: ArrayList<DatabaseImage>
+DatabaseImagesActivity <- FullscreenImageActivity: Close Button
+
+
+
+@enduml

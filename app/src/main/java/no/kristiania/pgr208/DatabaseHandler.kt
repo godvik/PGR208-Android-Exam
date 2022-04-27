@@ -7,6 +7,9 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class DatabaseHandler(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
@@ -77,7 +80,7 @@ class DatabaseHandler(context: Context) :
     }
 
     @SuppressLint("Range")
-    fun getIds() : ArrayList<Int> {
+    fun getIds(): ArrayList<Int> {
         val idList: ArrayList<Int> = ArrayList()
         val selectQuery = "SELECT * FROM $TABLE_UPLOADEDIMAGES"
         val db = this.readableDatabase
@@ -95,12 +98,14 @@ class DatabaseHandler(context: Context) :
             } while (cursor.moveToNext())
         }
         cursor.close()
+        db.close()
         return idList
     }
 
     //    Select all the images related to the ID of the original image. Add them and the original image to a list and return it
     @SuppressLint("Range")
     fun getRelatedImages(id: Int): ArrayList<DatabaseImage> {
+
         val imgList: ArrayList<DatabaseImage> = ArrayList()
         val selectQuery =
             "SELECT $TABLE_SAVEDIMAGES.$KEY_RESULTID, $TABLE_SAVEDIMAGES.$KEY_SAVEDIMAGE, $TABLE_UPLOADEDIMAGES.$KEY_UPLOADIMAGE, $TABLE_UPLOADEDIMAGES.$KEY_UPLOADID " +
