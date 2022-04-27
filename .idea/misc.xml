@@ -4,7 +4,9 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/main/res/drawable/some_drawable.xml" value="0.63125" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.16558441558441558" />
+        <entry key="app/src/main/res/layout/activity_fullscreen.xml" value="0.3392210144927536" />
+        <entry key="app/src/main/res/layout/activity_fullscreen_delete.xml" value="0.3392210144927536" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.48703703703703705" />
         <entry key="app/src/main/res/layout/activity_reverse_image_search.xml" value="0.389945652173913" />
         <entry key="app/src/main/res/layout/activity_saved_results.xml" value="0.35733695652173914" />
         <entry key="app/src/main/res/layout/fragment_delete_dialog.xml" value="0.33" />

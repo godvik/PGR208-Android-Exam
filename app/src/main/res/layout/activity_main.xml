@@ -21,30 +21,36 @@
             android:layout_weight="1"
             android:layout_margin="5dp"
             android:textColor="@color/white"
-            android:tag="1"
-            android:backgroundTint="@color/purple_500" />
+            android:textAllCaps="false"
+            android:backgroundTint="@color/myLight"
+            android:fontFamily="@font/work_sans"
+            android:textStyle="bold"/>
 
-    <Button
-        android:id="@+id/searchResultsBtn"
-        android:text="@string/search_results"
-        android:layout_width="match_parent"
-        android:layout_height="75dp"
-        android:layout_weight="1"
-        android:layout_margin="5dp"
-        android:textColor="@color/white"
-        android:tag="1"
-        android:backgroundTint="@color/purple_500" />
+        <Button
+            android:id="@+id/searchResultsBtn"
+            android:text="@string/search_results"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            android:backgroundTint="@color/myLight"
+            android:fontFamily="@font/work_sans"
+            android:textStyle="bold"/>
 
-    <Button
-        android:id="@+id/savedResultsBtn"
-        android:text="@string/saved_results"
-        android:layout_width="match_parent"
-        android:layout_height="75dp"
-        android:layout_weight="1"
-        android:layout_margin="5dp"
-        android:textColor="@color/white"
-        android:tag="1"
-        android:backgroundTint="@color/purple_500" />
+        <Button
+            android:id="@+id/savedResultsBtn"
+            android:text="@string/saved_results"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            android:backgroundTint="@color/myLight"
+            android:fontFamily="@font/work_sans"
+            android:textStyle="bold"/>
 
     </LinearLayout>
 
@@ -54,15 +60,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
-        <Button
-            android:id="@+id/uploadBtn"
-            android:layout_width="212dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="50dp"
-            android:backgroundTint="@color/teal_200"
-            android:text="@string/upload_btn" />
 
         <ImageView
             android:id="@+id/iv_userImage"
@@ -77,8 +74,22 @@
             android:id="@+id/tv_progress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"/>
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/crimson_text"
+            android:textAlignment="center"
+            android:textSize="14sp" />
+
+
+        <Button
+            android:id="@+id/uploadBtn"
+            android:layout_width="212dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="25dp"
+            android:backgroundTint="@color/myGreen"
+            android:fontFamily="@font/work_sans"
+            android:textStyle="bold"
+            android:text="@string/upload_btn" />
     </LinearLayout>
 
 
