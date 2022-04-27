@@ -9,8 +9,8 @@ import android.widget.Button
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import no.kristiania.pgr208.DatabaseImage
-import no.kristiania.pgr208.FullScreenImageActivity
+import no.kristiania.pgr208.data.DatabaseImage
+import no.kristiania.pgr208.activities.FullScreenImageActivity
 import no.kristiania.pgr208.R
 import no.kristiania.pgr208.utils.BitmapHelper
 

@@ -1,4 +1,4 @@
-package no.kristiania.pgr208
+package no.kristiania.pgr208.activities
 
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -22,9 +22,12 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import no.kristiania.pgr208.Constants.baseUrl
+import no.kristiania.pgr208.data.Constants.baseUrl
+import no.kristiania.pgr208.data.DatabaseImage
+import no.kristiania.pgr208.R
 import no.kristiania.pgr208.utils.BitmapHelper.bitmapToFileUri
 import no.kristiania.pgr208.utils.BitmapHelper.getBytes
+import no.kristiania.pgr208.utils.DatabaseHandler
 import okhttp3.OkHttpClient
 import java.io.File
 import java.util.concurrent.TimeUnit

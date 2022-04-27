@@ -1,4 +1,4 @@
-package no.kristiania.pgr208
+package no.kristiania.pgr208.utils
 
 import android.annotation.SuppressLint
 import android.content.ContentValues
@@ -7,9 +7,7 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import no.kristiania.pgr208.data.DatabaseImage
 
 class DatabaseHandler(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {

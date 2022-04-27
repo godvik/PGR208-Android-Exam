@@ -12,7 +12,11 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import no.kristiania.pgr208.*
+import no.kristiania.pgr208.activities.FullScreenImageActivity
+import no.kristiania.pgr208.data.DatabaseImage
+import no.kristiania.pgr208.data.ImageUrls
 import no.kristiania.pgr208.utils.BitmapHelper
+import no.kristiania.pgr208.utils.DatabaseHandler
 
 class ImageAdapter(private var context: Context, private val data: List<ImageUrls>) :
     RecyclerView.Adapter<ImageAdapter.MyViewHolder>() {

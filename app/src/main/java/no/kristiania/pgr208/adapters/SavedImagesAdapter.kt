@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import no.kristiania.pgr208.DatabaseHandler
+import no.kristiania.pgr208.utils.DatabaseHandler
 import no.kristiania.pgr208.R
 
 class SavedImagesAdapter(private val data: ArrayList<Int>) :

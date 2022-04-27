@@ -1,4 +1,4 @@
-package no.kristiania.pgr208
+package no.kristiania.pgr208.activities
 
 
 import android.os.Bundle
@@ -6,7 +6,9 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import no.kristiania.pgr208.R
 import no.kristiania.pgr208.adapters.SavedImagesAdapter
+import no.kristiania.pgr208.utils.DatabaseHandler
 
 class DatabaseImagesActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView

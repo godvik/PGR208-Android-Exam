@@ -1,14 +1,13 @@
-package no.kristiania.pgr208
+package no.kristiania.pgr208.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import kotlinx.android.synthetic.main.fragment_delete_dialog.view.*
-import no.kristiania.pgr208.adapters.ImageAdapter
-import no.kristiania.pgr208.adapters.SavedImagesAdapter
+import no.kristiania.pgr208.R
+import no.kristiania.pgr208.utils.DatabaseHandler
 
 class DeleteDialogFragment() : DialogFragment() {
     private lateinit var db: DatabaseHandler

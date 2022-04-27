@@ -1,4 +1,4 @@
-package no.kristiania.pgr208
+package no.kristiania.pgr208.activities
 
 import android.os.Bundle
 import android.widget.Button
@@ -13,7 +13,9 @@ import com.androidnetworking.interfaces.JSONArrayRequestListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import no.kristiania.pgr208.Constants.baseUrl
+import no.kristiania.pgr208.data.Constants.baseUrl
+import no.kristiania.pgr208.data.ImageUrls
+import no.kristiania.pgr208.R
 import no.kristiania.pgr208.adapters.ImageAdapter
 import org.json.JSONArray
 

@@ -1,10 +1,13 @@
-package no.kristiania.pgr208
+package no.kristiania.pgr208.activities
 
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import no.kristiania.pgr208.fragments.DeleteDialogFragment
+import no.kristiania.pgr208.R
+import no.kristiania.pgr208.utils.DatabaseHandler
 
 class FullScreenImageActivity : AppCompatActivity() {
     private lateinit var db: DatabaseHandler

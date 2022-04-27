@@ -17,14 +17,14 @@
         android:usesCleartextTraffic="true"
         >
         <activity
-            android:name=".ReverseImageSearchActivity"
+            android:name=".activities.ReverseImageSearchActivity"
             android:exported="false" />
-        <activity android:name=".DatabaseImagesActivity"
+        <activity android:name=".activities.DatabaseImagesActivity"
             android:exported="false" />
-        <activity android:name=".FullScreenImageActivity"
+        <activity android:name=".activities.FullScreenImageActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
