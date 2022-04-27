@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvProgress: TextView
     private lateinit var searchImages: Button
     private lateinit var imageFile: File
-    private lateinit var uploadedImageURL: String
+    private  var uploadedImageURL: String? = null
     private lateinit var bitmap: Bitmap
     private lateinit var db: DatabaseHandler
 
@@ -61,12 +61,14 @@ class MainActivity : AppCompatActivity() {
 
 
 //        Sends the uploadedImageURL to the next activity to be used for GET requests
-
-        searchImages.visibility = View.INVISIBLE
         searchImages.setOnClickListener {
-            val i = Intent(this, ReverseImageSearchActivity::class.java)
-            i.putExtra("Image_URL", uploadedImageURL)
-            startActivity(i)
+            if (uploadedImageURL.isNullOrEmpty()) {
+                tvProgress.text = getString(R.string.upload_img_first)
+            } else {
+                val i = Intent(this, ReverseImageSearchActivity::class.java)
+                i.putExtra("Image_URL", uploadedImageURL)
+                startActivity(i)
+            }
         }
 
 //        Upload image to server and save it to local db
@@ -116,7 +118,7 @@ class MainActivity : AppCompatActivity() {
             imageFile = File(imagePath.toString())
             uploadBtn.visibility = View.VISIBLE
         } else {
-            tvProgress.text = result.error.toString()
+            println(result.error)
         }
     }
 
@@ -138,7 +140,6 @@ class MainActivity : AppCompatActivity() {
                         uploadedImageURL = response
                         db.addUploadedImage(DatabaseImage(0, getBytes(bitmap)))
                         tvProgress.text = getString(R.string.upload_img_success)
-                        searchImages.visibility = View.VISIBLE
                     }
 
                     override fun onError(anError: ANError) {
