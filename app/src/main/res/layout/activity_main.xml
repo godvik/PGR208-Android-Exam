@@ -82,7 +82,8 @@
 
         <Button
             android:id="@+id/uploadBtn"
-            android:layout_width="212dp"
+            android:drawableLeft="@drawable/ic_baseline_cloud_upload_24"
+            android:layout_width="150dp"
             android:layout_height="50dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="25dp"
