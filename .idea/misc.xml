@@ -6,9 +6,13 @@
         <entry key="app/src/main/res/drawable/some_drawable.xml" value="0.63125" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.16558441558441558" />
         <entry key="app/src/main/res/layout/activity_reverse_image_search.xml" value="0.389945652173913" />
+        <entry key="app/src/main/res/layout/activity_saved_results.xml" value="0.35733695652173914" />
+        <entry key="app/src/main/res/layout/fragment_delete_dialog.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/horizontal_images.xml" value="0.5" />
         <entry key="app/src/main/res/layout/item_custom_row.xml" value="0.5734375" />
+        <entry key="app/src/main/res/layout/list_db_images.xml" value="0.5" />
         <entry key="app/src/main/res/layout/list_photo.xml" value="0.46927083333333336" />
-        <entry key="app/src/main/res/layout/list_searchresult_images.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/list_searchresult_images.xml" value="0.5" />
         <entry key="app/src/main/res/layout/saved_images.xml" value="0.7067708333333333" />
       </map>
     </option>
