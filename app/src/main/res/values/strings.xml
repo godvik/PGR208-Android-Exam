@@ -28,4 +28,5 @@
     <string name="delete_dialog">Are you sure you want to delete this image? If you delete the original image, all related images will also be deleted!</string>
     <string name="cancel">Cancel</string>
     <string name="upload_img_first">You must upload an image first!</string>
+    <string name="error_413">Imagefile is too large!</string>
 </resources>

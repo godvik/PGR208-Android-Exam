@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvProgress: TextView
     private lateinit var searchImages: Button
     private lateinit var imageFile: File
-    private  var uploadedImageURL: String? = null
+    private var uploadedImageURL: String? = null
     private lateinit var bitmap: Bitmap
     private lateinit var db: DatabaseHandler
 
@@ -126,7 +126,6 @@ class MainActivity : AppCompatActivity() {
     //    Uploads the previously created imageFile. On success it also saves the imageFile to the database as a BLOB
     private fun uploadImage() {
         tvProgress.text = getString(R.string.upload_img)
-
 //        Move the POST operation to a coroutine on IO thread
         CoroutineScope(Dispatchers.IO).launch {
             AndroidNetworking.upload(baseUrl + "upload")
@@ -143,11 +142,16 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     override fun onError(anError: ANError) {
-                        println(anError.errorCode)
-                        println(anError.message)
-                        println(anError.errorDetail)
-                        println(anError.errorBody)
-                        tvProgress.text = getString(R.string.upload_img_error, anError.errorDetail)
+                        if (anError.errorCode == 413) {
+                            tvProgress.text = getString(R.string.error_413)
+                        } else {
+                            println(anError.errorCode)
+                            println(anError.message)
+                            println(anError.errorDetail)
+                            println(anError.errorBody)
+                            tvProgress.text =
+                                getString(R.string.upload_img_error, anError.errorDetail)
+                        }
                     }
                 })
         }
