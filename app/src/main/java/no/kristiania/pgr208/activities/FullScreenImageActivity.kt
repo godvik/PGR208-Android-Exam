@@ -19,6 +19,7 @@ class FullScreenImageActivity : AppCompatActivity() {
         val imageUrl = intent.getStringExtra("image_link")
         val imageBlob = intent.getByteArrayExtra("imageBlob")
         val imageId = intent.getIntExtra("imageId", -1)
+        val columnName = intent.getStringExtra("columnName")
 
 //        We use the same activity for 2 slightly different layouts
 //        if the image_link intent is empty, we show the layout with a delete button for saved images
@@ -38,6 +39,7 @@ class FullScreenImageActivity : AppCompatActivity() {
         btnDelete?.setOnClickListener {
             val bundle = Bundle()
             bundle.putInt("imageId", imageId)
+            bundle.putString("columnName", columnName)
             val dialog = DeleteDialogFragment()
             dialog.arguments = bundle
             dialog.show(supportFragmentManager, "deleteDialog")

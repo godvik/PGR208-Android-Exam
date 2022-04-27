@@ -126,14 +126,16 @@ class DatabaseHandler(context: Context) :
 //            Add the original image to the list first
             imageId = cursor.getInt(cursor.getColumnIndex(KEY_UPLOADID))
             image = cursor.getBlob(cursor.getColumnIndex(KEY_UPLOADIMAGE))
-            val originalImage = DatabaseImage(id = imageId, image = image)
+
+            val originalImage = DatabaseImage(id = imageId, image = image, cursor.getColumnName(0))
             imgList.add(originalImage)
 //            Add the rest of the images
             do {
                 imageId = cursor.getInt(cursor.getColumnIndex(KEY_RESULTID))
                 image = cursor.getBlob(cursor.getColumnIndex(KEY_SAVEDIMAGE))
 
-                val img = DatabaseImage(id = imageId, image = image)
+
+                val img = DatabaseImage(id = imageId, image = image, cursor.getColumnName(0))
                 imgList.add(img)
             } while (cursor.moveToNext())
         }
@@ -150,7 +152,7 @@ class DatabaseHandler(context: Context) :
 
                 imageId = cursor.getInt(0)
                 image = cursor.getBlob(cursor.getColumnIndex(KEY_UPLOADIMAGE))
-                val img = DatabaseImage(id = imageId, image = image)
+                val img = DatabaseImage(id = imageId, image = image, cursor.getColumnName(0))
                 imgList.add(img)
             }
         }
@@ -163,6 +165,7 @@ class DatabaseHandler(context: Context) :
     fun deleteImage(id: Int, myCallback: () -> Unit): Boolean {
         val db = this.writableDatabase
         val response = db.delete(TABLE_SAVEDIMAGES, "$KEY_RESULTID = $id", null) != 0
+        db.close()
         myCallback.invoke()
         return response
     }
@@ -170,6 +173,7 @@ class DatabaseHandler(context: Context) :
     fun deleteUploadedImage(id: Int, myCallback: () -> Unit): Boolean {
         val db = this.writableDatabase
         val response = db.delete(TABLE_UPLOADEDIMAGES, "$KEY_UPLOADID = $id", null) != 0
+        db.close()
         myCallback.invoke()
         return response
     }

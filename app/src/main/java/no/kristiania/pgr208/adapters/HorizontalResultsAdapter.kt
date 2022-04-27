@@ -35,10 +35,12 @@ class HorizontalResultsAdapter(private var context: Context, private val data: L
         val viewButton = holder.viewBtn
         val imageBlob = data[position].image
         val imageId = data[position].id
+        val columnName = data[position].column
         viewButton.setOnClickListener {
             val intent = Intent(context, FullScreenImageActivity::class.java)
             intent.putExtra("imageBlob", imageBlob )
             intent.putExtra("imageId", imageId)
+            intent.putExtra("columnName", columnName)
             context.startActivity(intent)
 
         }

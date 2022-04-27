@@ -37,7 +37,7 @@ class ImageAdapter(private var context: Context, private val data: List<ImageUrl
                 if (imageView.drawable != null) {
                     val drawable = imageView.drawable
                     val bitmap = drawable.toBitmap()
-                    db.addSavedImage(DatabaseImage(1, BitmapHelper.getBytes(bitmap)))
+                    db.addSavedImage(DatabaseImage(1, BitmapHelper.getBytes(bitmap), ""))
                     title.text = view.context.getString(R.string.saved_db)
                 } else {
                     title.text = view.context.getString(R.string.no_image)

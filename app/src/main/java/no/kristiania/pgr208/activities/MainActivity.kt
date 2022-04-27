@@ -140,7 +140,7 @@ class MainActivity : AppCompatActivity() {
                 .getAsString(object : StringRequestListener {
                     override fun onResponse(response: String) {
                         uploadedImageURL = response
-                        db.addUploadedImage(DatabaseImage(0, getBytes(bitmap)))
+                        db.addUploadedImage(DatabaseImage(0, getBytes(bitmap),""))
                         tvProgress.text = getString(R.string.upload_img_success)
                     }
 
