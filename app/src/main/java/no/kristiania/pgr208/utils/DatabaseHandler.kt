@@ -116,6 +116,7 @@ class DatabaseHandler(context: Context) :
         var imageId: Int
         var image: ByteArray
 
+
         try {
             cursor = db.rawQuery(selectQuery, null)
         } catch (e: SQLiteException) {
@@ -127,15 +128,15 @@ class DatabaseHandler(context: Context) :
             imageId = cursor.getInt(cursor.getColumnIndex(KEY_UPLOADID))
             image = cursor.getBlob(cursor.getColumnIndex(KEY_UPLOADIMAGE))
 
-            val originalImage = DatabaseImage(id = imageId, image = image, cursor.getColumnName(0))
+
+            val originalImage = DatabaseImage(id = imageId, image = image, column = KEY_UPLOADID)
             imgList.add(originalImage)
 //            Add the rest of the images
             do {
                 imageId = cursor.getInt(cursor.getColumnIndex(KEY_RESULTID))
                 image = cursor.getBlob(cursor.getColumnIndex(KEY_SAVEDIMAGE))
 
-
-                val img = DatabaseImage(id = imageId, image = image, cursor.getColumnName(0))
+                val img = DatabaseImage(id = imageId, image = image, column = KEY_RESULTID)
                 imgList.add(img)
             } while (cursor.moveToNext())
         }
@@ -152,7 +153,7 @@ class DatabaseHandler(context: Context) :
 
                 imageId = cursor.getInt(0)
                 image = cursor.getBlob(cursor.getColumnIndex(KEY_UPLOADIMAGE))
-                val img = DatabaseImage(id = imageId, image = image, cursor.getColumnName(0))
+                val img = DatabaseImage(id = imageId, image = image, column = KEY_UPLOADID)
                 imgList.add(img)
             }
         }
