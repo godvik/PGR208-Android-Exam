@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PGR208-Exam</string>
+    <string name="app_name">Plant Finder</string>
     <string name="select_image">Select Image</string>
     <string name="search_results">Search Image</string>
     <string name="saved_results">Saved Images</string>
